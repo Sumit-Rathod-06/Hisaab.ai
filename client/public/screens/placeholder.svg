@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ecfdf5"/>
+      <stop offset="0.5" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f0fdfa"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#10b981" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#14b8a6" stop-opacity="0.25"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <rect x="70" y="70" width="1260" height="110" rx="18" fill="url(#bar)"/>
+  <rect x="70" y="220" width="820" height="42" rx="12" fill="#0f172a" fill-opacity="0.10"/>
+  <rect x="70" y="290" width="1080" height="28" rx="10" fill="#0f172a" fill-opacity="0.08"/>
+  <rect x="70" y="340" width="980" height="28" rx="10" fill="#0f172a" fill-opacity="0.08"/>
+  <rect x="70" y="410" width="520" height="260" rx="18" fill="#0f172a" fill-opacity="0.06"/>
+  <rect x="640" y="410" width="690" height="260" rx="18" fill="#0f172a" fill-opacity="0.06"/>
+  <rect x="70" y="710" width="1260" height="120" rx="18" fill="#0f172a" fill-opacity="0.05"/>
+</svg>

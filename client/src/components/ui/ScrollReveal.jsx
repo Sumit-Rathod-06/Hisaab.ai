@@ -19,6 +19,7 @@ const ScrollReveal = ({
     wordAnimationEnd = 'bottom bottom'
 }) => {
     const containerRef = useRef(null);
+    const cleanupRef = useRef([]);
 
     const splitText = useMemo(() => {
         const text = typeof children === 'string' ? children : '';
@@ -36,9 +37,12 @@ const ScrollReveal = ({
         const el = containerRef.current;
         if (!el) return;
 
+        cleanupRef.current.forEach((fn) => fn());
+        cleanupRef.current = [];
+
         const scroller = scrollContainerRef && scrollContainerRef.current ? scrollContainerRef.current : window;
 
-        gsap.fromTo(
+        const rotateTween = gsap.fromTo(
             el,
             { transformOrigin: '0% 50%', rotate: baseRotation },
             {
@@ -56,7 +60,7 @@ const ScrollReveal = ({
 
         const wordElements = el.querySelectorAll('.word');
 
-        gsap.fromTo(
+        const opacityTween = gsap.fromTo(
             wordElements,
             { opacity: baseOpacity, willChange: 'opacity' },
             {
@@ -74,7 +78,7 @@ const ScrollReveal = ({
         );
 
         if (enableBlur) {
-            gsap.fromTo(
+            const blurTween = gsap.fromTo(
                 wordElements,
                 { filter: `blur(${blurStrength}px)` },
                 {
@@ -90,10 +94,26 @@ const ScrollReveal = ({
                     }
                 }
             );
+
+            cleanupRef.current.push(() => {
+                blurTween?.scrollTrigger?.kill();
+                blurTween?.kill();
+            });
         }
 
+        cleanupRef.current.push(() => {
+            rotateTween?.scrollTrigger?.kill();
+            rotateTween?.kill();
+        });
+
+        cleanupRef.current.push(() => {
+            opacityTween?.scrollTrigger?.kill();
+            opacityTween?.kill();
+        });
+
         return () => {
-            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+            cleanupRef.current.forEach((fn) => fn());
+            cleanupRef.current = [];
         };
     }, [scrollContainerRef, enableBlur, baseRotation, baseOpacity, rotationEnd, wordAnimationEnd, blurStrength]);
 
