@@ -28,9 +28,9 @@ const App = () => {
         <Route
           path="dashboard"
           element={
-            <PrivateRoute>
+            
               <DashBoardPage />
-            </PrivateRoute>
+            
           }
         />
         <Route path="expense_analysis"
