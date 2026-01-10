@@ -33,8 +33,7 @@ const App = () => {
             
           }
         />
-        <Route
-          path="expense_analysis"
+        <Route path="expense_analysis"
           element={
             <PrivateRoute>
               <ExpenseAnalysisPage />

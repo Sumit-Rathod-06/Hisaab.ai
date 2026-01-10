@@ -23,12 +23,12 @@ const DashboardLayout = ({ children, activePage = 'dashboard' }) => {
     };
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', key: 'dashboard' },
-        { icon: Bell, label: 'Alerts', path: '/alerts', key: 'alerts' },
-        { icon: Receipt, label: 'Transactions', path: '/dashboard/transactions', key: 'transactions' },
-        { icon: Target, label: 'Goals', path: '/dashboard/goals', key: 'goals' },
-        { icon: TrendingUp, label: 'Investments', path: '/dashboard/investments', key: 'investments' },
-        { icon: Settings, label: 'Settings', path: '/dashboard/settings', key: 'settings' },
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', active: true },
+        { icon: Receipt, label: 'Transactions', path: '/transactions' },
+        { icon: Target, label: 'Goals', path: '/goalpage' },
+        { icon: TrendingUp, label: 'Investments', path: '/investments' },
+        { icon: Settings, label: 'Alerts', path: '/alerts' },
+        { icon: Settings, label: 'Profile', path: '/profile' },
     ];
 
     return (
