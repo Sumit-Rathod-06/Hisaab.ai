@@ -69,28 +69,7 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 1 }}
           className="mt-12 flex flex-col items-center gap-4"
         >
-          {/* Row 1 */}
-          <div className="flex flex-wrap justify-center gap-4">
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg border border-gray-100 cursor-pointer"
-            >
-              <FaChartBar className="text-blue-600 text-xl" />
-              <span className="text-gray-700 font-medium">
-                Track expenses & savings automatically
-              </span>
-            </motion.div>
 
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg border border-gray-100 cursor-pointer"
-            >
-              <FaRobot className="text-blue-600 text-xl" />
-              <span className="text-gray-700 font-medium">
-                Get personalized financial advice
-              </span>
-            </motion.div>
-          </div>
 
           {/* Row 2 */}
           <div className="flex justify-center">
