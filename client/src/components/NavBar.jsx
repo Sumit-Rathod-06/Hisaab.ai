@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, DollarSign } from "lucide-react";
-import { cn } from "../lib/utils";
+
 import { Menu as NavMenu, MenuItem, ProductItem, HoveredLink } from "./ui/navbar-menu";
 
 const Navbar = () => {
@@ -27,10 +27,10 @@ const Navbar = () => {
             <NavMenu setActive={setActive}>
               {/* LOGO inside black navbar */}
               <div className="flex items-center gap-2 mr-16">
-                <div className="p-1.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg">
+                <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg">
                   <DollarSign className="w-4 h-4 text-white" strokeWidth={2.5} />
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent ">
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent ">
                   Hisaab.ai
                 </span>
               </div>
@@ -95,10 +95,10 @@ const Navbar = () => {
 
           {/* MOBILE LOGO */}
           <div className="flex lg:hidden items-center gap-2">
-            <div className="p-1.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg">
+            <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg">
               <DollarSign className="w-4 h-4 text-white" strokeWidth={2.5} />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
               Hisaab.ai
             </span>
           </div>
@@ -108,13 +108,13 @@ const Navbar = () => {
             <div className="hidden lg:flex gap-3">
               <button
                 onClick={() => navigate("/login")}
-                className="px-4 py-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-800 transition-colors"
+                className="px-4 py-1.5 text-sm font-medium text-blue-700 hover:text-blue-800 transition-colors"
               >
                 Log In
               </button>
               <button
                 onClick={() => navigate("/register")}
-                className="px-4 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all shadow-sm"
+                className="px-4 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all shadow-sm"
               >
                 Get Started
               </button>
@@ -123,7 +123,7 @@ const Navbar = () => {
 
           {/* MOBILE ICON */}
           <button
-            className="lg:hidden text-emerald-700"
+            className="lg:hidden text-blue-700"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -133,32 +133,32 @@ const Navbar = () => {
 
       {/* MOBILE MENU */}
       {isOpen && (
-        <div className="lg:hidden border-t border-emerald-100 bg-white">
+        <div className="lg:hidden border-t border-blue-100 bg-white">
           <div className="px-4 py-3 space-y-1">
-            <a href="#features" className="block px-3 py-2 rounded-md text-gray-700 hover:bg-emerald-50">
+            <a href="#features" className="block px-3 py-2 rounded-md text-gray-700 hover:bg-blue-50">
               Features
             </a>
-            <a href="#agents" className="block px-3 py-2 rounded-md text-gray-700 hover:bg-emerald-50">
+            <a href="#agents" className="block px-3 py-2 rounded-md text-gray-700 hover:bg-blue-50">
               AI Agents
             </a>
-            <a href="/dashboard" className="block px-3 py-2 rounded-md text-gray-700 hover:bg-emerald-50">
+            <a href="/dashboard" className="block px-3 py-2 rounded-md text-gray-700 hover:bg-blue-50">
               Dashboard
             </a>
-            <a href="/docs" className="block px-3 py-2 rounded-md text-gray-700 hover:bg-emerald-50">
+            <a href="/docs" className="block px-3 py-2 rounded-md text-gray-700 hover:bg-blue-50">
               Resources
             </a>
 
             {!isAuthenticated && (
-              <div className="pt-3 space-y-2 border-t border-emerald-100">
+              <div className="pt-3 space-y-2 border-t border-blue-100">
                 <button
                   onClick={() => navigate("/login")}
-                  className="w-full px-3 py-2 text-emerald-700 border border-emerald-300 rounded-lg hover:bg-emerald-50"
+                  className="w-full px-3 py-2 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-50"
                 >
                   Log In
                 </button>
                 <button
                   onClick={() => navigate("/register")}
-                  className="w-full px-3 py-2 text-white bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg"
+                  className="w-full px-3 py-2 text-white bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg"
                 >
                   Get Started
                 </button>
