@@ -1,10 +1,10 @@
-import { useState } from "react";
 import {
   Route,
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
+
 
 import Landingpage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
@@ -13,6 +13,8 @@ import DashBoardPage from "./pages/DashBoardPage";
 import PrivateRoute from "./components/PrivateRoute";
 import ExpenseAnalysisPage from "./pages/ExpenseAnalysisPage";
 import ProfilePage from "./pages/ProfilePage";
+import GoalPage from './pages/GoalPage';
+import Alerts from "./pages/AlertsPage.jsx";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -21,6 +23,8 @@ const App = () => {
         <Route index element={<Landingpage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path='dashboard' element={<DashBoardPage/>}/>
+        <Route path='goalpage' element={<GoalPage/>}/>
         <Route
           path="dashboard"
           element={
@@ -45,6 +49,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
+        <Route path="/alerts" element={<Alerts />} />
       </Route>
     )
   );
