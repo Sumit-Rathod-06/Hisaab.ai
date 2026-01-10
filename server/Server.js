@@ -10,6 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/transactions", financeRoutes);
 app.use("/api/auth", auth_router);
 app.use("/api/finance", protect, financeRoutes);
 app.use("/api", expense_router);
