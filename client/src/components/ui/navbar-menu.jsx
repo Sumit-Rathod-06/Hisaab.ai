@@ -16,7 +16,7 @@ export const MenuItem = ({ setActive, active, item, children }) => {
         <div onMouseEnter={() => setActive(item)} className="relative ">
             <motion.p
                 transition={{ duration: 0.3 }}
-                className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
+                className="cursor-pointer text-black hover:opacity-[0.9] dark:text-black"
             >
                 {item}
             </motion.p>
@@ -31,7 +31,7 @@ export const MenuItem = ({ setActive, active, item, children }) => {
                             <motion.div
                                 transition={transition}
                                 layoutId="active" // layoutId ensures smooth animation
-                                className="bg-white dark:bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
+                                className="bg-white dark:bg-gray-100 backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-gray-300 shadow-xl"
                             >
                                 <motion.div
                                     layout // layout ensures smooth animation
@@ -52,7 +52,7 @@ export const Menu = ({ setActive, children }) => {
     return (
         <nav
             onMouseLeave={() => setActive(null)} // resets the state
-            className="relative rounded-full dark:bg-black bg-white flex justify-between space-x-8 px-12 py-4 "
+            className="relative rounded-full dark:bg-gray-100 bg-white flex justify-between space-x-8 px-12 py-4 "
         >
             {children}
         </nav>
@@ -70,10 +70,10 @@ export const ProductItem = ({ title, description, href, src }) => {
                 className="shrink-0 rounded-md shadow-2xl"
             />
             <div>
-                <h4 className="text-xl font-bold mb-1 text-black dark:text-white">
+                <h4 className="text-xl font-bold mb-1 text-black dark:text-black">
                     {title}
                 </h4>
-                <p className="text-neutral-700 text-sm max-w-[10rem] dark:text-neutral-300">
+                <p className="text-neutral-700 text-sm max-w-[10rem] dark:text-neutral-700">
                     {description}
                 </p>
             </div>
@@ -85,7 +85,7 @@ export const HoveredLink = ({ children, ...rest }) => {
     return (
         <a
             {...rest}
-            className="text-neutral-700 dark:text-neutral-200 hover:text-black "
+            className="text-neutral-700 dark:text-neutral-800 hover:text-black "
         >
             {children}
         </a>

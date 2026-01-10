@@ -32,7 +32,7 @@
         overflow-y: auto;
         overflow-x: hidden;
         scrollbar-width: thin;
-        scrollbar-color: rgba(16, 185, 129, 0.3) transparent;
+        scrollbar-color: rgba(37, 99, 235, 0.3) transparent;
     }
 
     .preview-left::-webkit-scrollbar {
@@ -44,12 +44,12 @@
     }
 
     .preview-left::-webkit-scrollbar-thumb {
-        background: rgba(16, 185, 129, 0.3);
+        background: rgba(37, 99, 235, 0.3);
         border-radius: 3px;
     }
 
     .preview-left::-webkit-scrollbar-thumb:hover {
-        background: rgba(16, 185, 129, 0.5);
+        background: rgba(37, 99, 235, 0.5);
     }
 }
 
