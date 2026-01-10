@@ -21,20 +21,55 @@ const ExpenseDashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get("http://localhost:5000/api/finance/expense");
-                console.log("API Response:", response.data);
-                setDashboardData(response.data);
-            } catch (error) {
-                console.error("Error fetching expense data:", error);
-                console.error("Error details:", error.response?.data || error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const [expenseRes, txRes] = await Promise.all([
+        axios.get("http://localhost:5000/api/finance/expense", config),
+        axios.get("http://localhost:5000/api/finance/transactions", config),
+      ]);
+
+      const expenseData = expenseRes.data;
+      const transactions = txRes.data.transactions;
+
+      // --- DAILY SPENDING DERIVATION ---
+      const dailyMap = {};
+      transactions.forEach(tx => {
+        if (tx.transaction_type === "debit") {
+          dailyMap[tx.date] = (dailyMap[tx.date] || 0) + Number(tx.amount);
+        }
+      });
+
+      const dailySpending = Object.entries(dailyMap)
+        .map(([date, amount]) => ({ date, amount }))
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      setDashboardData({
+        ...expenseData,
+        daily_spending: dailySpending,
+        // normalize keys for frontend
+        insights: expenseData.ai_insights || [],
+        top_3_categories: expenseData.top_3_categories.map(c => c.category),
+      });
+
+    } catch (error) {
+      console.error("Dashboard fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
+
 
     if (loading) {
         return (
@@ -47,13 +82,18 @@ const ExpenseDashboard = () => {
         );
     }
 
-    if (!dashboardData || !dashboardData.daily_spending || !dashboardData.category_wise_spending) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <p className="text-red-600">Failed to load dashboard data</p>
-            </div>
-        );
-    }
+    if (
+  !dashboardData ||
+  !dashboardData.daily_spending?.length ||
+  !dashboardData.category_wise_spending
+) {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <p className="text-red-600">Failed to load dashboard data</p>
+    </div>
+  );
+}
+
     const getCategoryPercentage = (amount) =>
         ((amount / dashboardData.total_expense) * 100).toFixed(1);
 

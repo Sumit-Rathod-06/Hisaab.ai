@@ -1,5 +1,6 @@
 import express from "express";
 import { getMCPClient } from "../mcpClient.js";
+import db from "../config/db.js";
 
 const router = express.Router();
 
@@ -254,7 +255,7 @@ router.get("/transactions", async (req, res) => {
   try {
     const userId = "d8f24ba0-b99d-4433-be84-7959d5298ff0";
 
-    const result = await pool.query(
+    const result = await db.query(
       `
       SELECT 
         id,
