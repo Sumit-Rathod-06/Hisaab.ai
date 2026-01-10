@@ -90,3 +90,13 @@ CREATE TABLE goals (
 
 CREATE INDEX idx_goals_user
 ON goals(user_id);
+
+CREATE TABLE user_category_memory (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    merchant_pattern TEXT NOT NULL,
+    category TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, merchant_pattern)
+);
+

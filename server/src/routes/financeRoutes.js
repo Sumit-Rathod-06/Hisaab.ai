@@ -131,37 +131,26 @@ router.get("/alerts", async (req, res) => {
 
   try {
     const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
     const mcp = await getMCPClient();
 
     const result = await mcp.callTool(
       {
         name: "alerts",
-        arguments: { user_id: userId },
+        arguments: { user_id: userId }
       },
       undefined,
-      {
-        timeout: 300000,
-      }
+      { timeout: 300000 }
     );
 
-  //   // 1. Extract the text from the MCP content array
-  //   const rawText = result.content[0].text;
+    const rawText = result.content[0].text;
 
     try {
-      // 2. Parse the string into a real JSON object
-      // We use a regex replace just in case the AI included markdown code blocks
       const cleanedText = rawText.replace(/```json|```/g, "").trim();
       const jsonObject = JSON.parse(cleanedText);
-
-      // 3. Send the object to the frontend
       res.json(jsonObject);
-    } catch (parseErr) {
-      console.error("Alerts JSON Parsing failed:", parseErr);
-      // Fallback: send as text if it's not valid JSON
+    } catch {
       res.json({ alerts: rawText });
     }
   } catch (err) {
@@ -207,6 +196,96 @@ router.get("/summary", async (req, res) => {
     }
   } catch (err) {
     console.error("CFO Summary error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post("/milestone", async (req, res) => {
+  req.setTimeout(300000);
+
+  try {
+    const { goalId, savedAmount, expectedAmount, expenseAnalysis } = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    if (!goalId) {
+      return res.status(400).json({ error: "goalId is required" });
+    }
+
+    const mcp = await getMCPClient();
+
+    const result = await mcp.callTool(
+      {
+        name: "update_milestone",
+        arguments: {
+          user_id: userId,
+          goal_id: goalId,
+          saved_amount: savedAmount,
+          expected_amount: expectedAmount,
+          expense_analysis: expenseAnalysis
+        }
+      },
+      undefined,
+      { timeout: 300000 }
+    );
+
+    const rawText = result.content[0].text;
+    const cleaned = rawText.replace(/```json|```/g, "").trim();
+    const json = JSON.parse(cleaned);
+
+    res.json(json);
+  } catch (err) {
+    console.error("Milestone update error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/finance/chat
+router.post("/chat", async (req, res) => {
+  req.setTimeout(300000);
+
+  try {
+    const userId = req.user?.id;
+    const { question } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    if (!question) {
+      return res.status(400).json({ error: "question is required" });
+    }
+
+    const mcp = await getMCPClient();
+
+    const result = await mcp.callTool(
+      {
+        name: "finance_chat",
+        arguments: {
+          user_id: userId,
+          question: question,
+        },
+      },
+      undefined,
+      { timeout: 300000 }
+    );
+
+    // MCP returns text in content array
+    const rawText = result.content?.[0]?.text || "";
+
+    // If the agent returns JSON, try parsing
+    try {
+      const cleaned = rawText.replace(/```json|```/g, "").trim();
+      const json = JSON.parse(cleaned);
+      return res.json(json);
+    } catch {
+      // Otherwise return plain text answer
+      return res.json({ answer: rawText });
+    }
+  } catch (err) {
+    console.error("Chat error:", err);
     res.status(500).json({ error: err.message });
   }
 });
