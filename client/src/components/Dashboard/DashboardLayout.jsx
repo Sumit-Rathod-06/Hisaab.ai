@@ -23,10 +23,11 @@ const DashboardLayout = ({ children }) => {
 
     const menuItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', active: true },
-        { icon: Receipt, label: 'Transactions', path: '/dashboard/transactions' },
-        { icon: Target, label: 'Goals', path: '/dashboard/goals' },
-        { icon: TrendingUp, label: 'Investments', path: '/dashboard/investments' },
-        { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
+        { icon: Receipt, label: 'Transactions', path: '/transactions' },
+        { icon: Target, label: 'Goals', path: '/goalpage' },
+        { icon: TrendingUp, label: 'Investments', path: '/investments' },
+        { icon: Settings, label: 'Alerts', path: '/alerts' },
+        { icon: Settings, label: 'Profile', path: '/profile' },
     ];
 
     return (
