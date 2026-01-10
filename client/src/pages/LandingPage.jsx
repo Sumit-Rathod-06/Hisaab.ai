@@ -6,10 +6,12 @@ import OurSolution from "../components/LandingPage/Solution.jsx";
 import Audience from "../components/LandingPage/Audience.jsx";
 import TestimonialsMarquee from "../components/LandingPage/review.jsx";
 
+import Navbar from "../components/NavBar.jsx";
 
 const LandingPage = () => {
   return (
     <div className="w-full">
+      <Navbar />
       {/* Hero Section */}
       <HeroSection />
 
