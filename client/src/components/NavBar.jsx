@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, DollarSign } from "lucide-react";
-import { cn } from "../lib/utils";
+
 import { Menu as NavMenu, MenuItem, ProductItem, HoveredLink } from "./ui/navbar-menu";
 
 const Navbar = () => {
@@ -13,7 +13,8 @@ const Navbar = () => {
   // JWT CHECK
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsAuthenticated(token);
   }, []);
 
   return (
