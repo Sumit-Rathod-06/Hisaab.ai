@@ -148,8 +148,8 @@ router.get("/alerts", async (req, res) => {
       }
     );
 
-    // 1. Extract the text from the MCP content array
-    const rawText = result.content[0].text;
+  //   // 1. Extract the text from the MCP content array
+  //   const rawText = result.content[0].text;
 
     try {
       // 2. Parse the string into a real JSON object

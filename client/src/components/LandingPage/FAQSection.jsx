@@ -3,28 +3,28 @@ import { PlusCircle, MinusCircle } from 'lucide-react';
 
 const faqs = [
   {
-    question: "Is there a free trial available?",
-    answer: "Yes, you can try us for free for 30 days. If you want, we'll provide you with a free, personalized 30-minute onboarding call to get you up and running as soon as possible."
+    question: "What is Hisaab.ai and how does it work?",
+    answer: "Hisaab.ai is an AI-powered personal finance assistant that helps you manage your money smarter. Upload your bank statements (PDF, CSV, Excel), and our multi-agent AI system automatically categorizes transactions, analyzes spending patterns, tracks investments, and provides personalized financial insights."
   },
   {
-    question: "Can I change my plan later?",
-    answer: "Absolutely. You can upgrade or downgrade your plan at any time from your account settings. Changes will be reflected in your next billing cycle."
+    question: "How does the AI analyze my financial data?",
+    answer: "We use specialized AI agents that work together: the Expense Analyzer tracks spending patterns, the Investment Advisor monitors your portfolio, and the Goal Tracker helps you achieve financial milestones. Our ML models use pattern recognition and anomaly detection to provide accurate, context-aware recommendations."
   },
   {
-    question: "What is your cancellation policy?",
-    answer: "You can cancel your subscription at any time. Once cancelled, you will retain access to your features until the end of your current billing period."
+    question: "Is my financial data secure?",
+    answer: "Absolutely. We use bank-level security with JWT authentication, bcrypt encryption, and secure data protocols. Your data is encrypted at rest and in transit, and we never share your information with third parties. We comply with industry-standard security practices."
   },
   {
-    question: "Can other info be added to an invoice?",
-    answer: "Yes, you can add your company name, VAT number, and address to your invoices through the billing portal in your settings."
+    question: "What file formats can I upload?",
+    answer: "You can upload bank statements and investment documents in PDF, CSV, Excel formats, and even scanned images. Our OCR technology automatically extracts transaction data and intelligently categorizes it, saving you hours of manual entry."
   },
   {
-    question: "How does billing work?",
-    answer: "We offer monthly and annual billing. Our secure payment system processes your subscription automatically at the start of each period."
+    question: "How does goal tracking work?",
+    answer: "Set your financial goals (savings, travel, home purchase, etc.) and our Goal Tracker Agent monitors your progress, calculates required contributions, analyzes feasibility, and provides timeline adjustments. You'll get alerts when you're off track and actionable advice to stay on course."
   },
   {
-    question: "How do I change my account email?",
-    answer: "You can update your account email through the Profile section in your settings. You'll need to verify the new email address to complete the change."
+    question: "Can I track multiple investment portfolios?",
+    answer: "Yes! Our Investment Advisor Agent tracks multiple portfolios, analyzes performance, assesses risk, provides diversification recommendations, and calculates ROI. You'll get insights on portfolio rebalancing and opportunities to optimize your investments."
   }
 ];
 
@@ -71,9 +71,8 @@ const FAQSection = () => {
 
               {/* Animated Answer Container */}
               <div
-                className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                  activeIndex === index ? 'max-h-40 opacity-100 mt-3' : 'max-h-0 opacity-0'
-                }`}
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${activeIndex === index ? 'max-h-40 opacity-100 mt-3' : 'max-h-0 opacity-0'
+                  }`}
               >
                 <p className="text-slate-600 leading-relaxed">
                   {faq.answer}
