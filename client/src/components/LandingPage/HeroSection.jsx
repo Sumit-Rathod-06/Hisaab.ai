@@ -4,11 +4,11 @@ import RotatingText from "../ui/RotatingText";
 
 const HeroSection = () => {
   return (
-    <section className="relative bg-gradient-to-br from-[#f4fff9] via-white to-[#e8f9f0] min-h-screen flex items-center justify-center px-6 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-[#f4f9ff] via-white to-[#e8f0ff] min-h-screen flex items-center justify-center px-6 overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-20 left-10 w-72 h-72 bg-emerald-400/10 rounded-full blur-3xl"
+          className="absolute top-20 left-10 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3]
@@ -26,19 +26,6 @@ const HeroSection = () => {
       </div>
 
       <div className="max-w-6xl w-full text-center relative z-10">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-full text-sm text-emerald-700 font-medium mb-8"
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          7 AI Agents • Real-time Analysis • Multi-Agent System
-        </motion.div>
 
         {/* Heading with RotatingText */}
         <motion.h1
@@ -72,7 +59,7 @@ const HeroSection = () => {
           className="mt-8 text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
         >
           Organize, analyze, and plan your expenses, investments, and
-          financial goals using <span className="text-emerald-600 font-semibold">intelligent AI agents</span>.
+          financial goals using <span className="text-blue-600 font-semibold">intelligent AI agents</span>.
         </motion.p>
 
         {/* Feature Pills */}
@@ -88,7 +75,7 @@ const HeroSection = () => {
               whileHover={{ scale: 1.05, y: -5 }}
               className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg border border-gray-100 cursor-pointer"
             >
-              <FaChartBar className="text-emerald-600 text-xl" />
+              <FaChartBar className="text-blue-600 text-xl" />
               <span className="text-gray-700 font-medium">
                 Track expenses & savings automatically
               </span>
@@ -98,7 +85,7 @@ const HeroSection = () => {
               whileHover={{ scale: 1.05, y: -5 }}
               className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg border border-gray-100 cursor-pointer"
             >
-              <FaRobot className="text-emerald-600 text-xl" />
+              <FaRobot className="text-blue-600 text-xl" />
               <span className="text-gray-700 font-medium">
                 Get personalized financial advice
               </span>
@@ -111,7 +98,7 @@ const HeroSection = () => {
               whileHover={{ scale: 1.05, y: -5 }}
               className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg border border-gray-100 cursor-pointer"
             >
-              <FaBullseye className="text-emerald-600 text-xl" />
+              <FaBullseye className="text-blue-600 text-xl" />
               <span className="text-gray-700 font-medium">
                 Plan and achieve life goals smarter
               </span>
@@ -129,7 +116,7 @@ const HeroSection = () => {
           <motion.button
             whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(16, 185, 129, 0.3)" }}
             whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-10 py-5 rounded-2xl font-semibold flex items-center gap-3 transition shadow-xl"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-10 py-5 rounded-2xl font-semibold flex items-center gap-3 transition shadow-xl"
           >
             Get Started <FaArrowRight className="text-lg" />
           </motion.button>
@@ -139,7 +126,7 @@ const HeroSection = () => {
             whileTap={{ scale: 0.95 }}
             className="border-2 border-gray-300 px-10 py-5 rounded-2xl font-semibold text-gray-900 hover:bg-gray-50 transition flex items-center gap-3"
           >
-            <FaPlayCircle className="text-emerald-600 text-xl" />
+            <FaPlayCircle className="text-blue-600 text-xl" />
             View Demo
           </motion.button>
         </motion.div>

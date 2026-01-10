@@ -1,28 +1,28 @@
 import React from 'react';
-import { Instagram, Facebook, Youtube, Twitter, Heart } from 'lucide-react';
+import { Instagram, Facebook, Youtube, Twitter, DollarSign } from 'lucide-react';
 
 // Data structure for the navigation links
 const footerLinks = [
   {
-    title: "Explore",
+    title: "Features",
     links: [
-      { name: "Gallery", href: "#" },
+      { name: "Dashboard", href: "#" },
+      { name: "Transactions", href: "#" },
+      { name: "Analytics", href: "#" },
+      { name: "Goals", href: "#" },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { name: "Documentation", href: "#" },
+      { name: "API Reference", href: "#" },
       { name: "Tutorials", href: "#" },
-      { name: "Community", href: "#" },
       { name: "Blog", href: "#" },
     ],
   },
   {
-    title: "Tools",
-    links: [
-      { name: "Design Editor", href: "#" },
-      { name: "Analysis Tool", href: "#" },
-      { name: "Learning Path", href: "#" },
-      { name: "Resources", href: "#" },
-    ],
-  },
-  {
-    title: "Connect",
+    title: "Company",
     links: [
       { name: "About Us", href: "#" },
       { name: "Contact", href: "#" },
@@ -41,20 +41,20 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Top Section: Logo & Navigation Links */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8">
-          
+
           {/* Column 1: Logo and Description */}
           <div className="md:col-span-1">
             <div className="flex items-center space-x-2 mb-4">
-              {/* Placeholder Logo Icon (Using Lucide Heart, styled red/orange) */}
-              <div className="p-2 bg-red-700/80 rounded-full">
-                <Heart className="w-6 h-6 text-white" fill="white" />
+              {/* Hisaab.ai Logo Icon */}
+              <div className="p-2 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg">
+                <DollarSign className="w-6 h-6 text-white" strokeWidth={2.5} />
               </div>
               <span className="text-2xl font-bold text-white tracking-wider">
-                Chitrakolam 
+                Hisaab.ai
               </span>
             </div>
             <p className="text-sm text-gray-400 max-w-xs leading-relaxed">
-              Voice Assistant : +1(657) 2459118
+              Your AI-powered financial assistant for smart expense tracking, investment insights, and goal planning.
             </p>
           </div>
 
@@ -88,7 +88,7 @@ const Footer = () => {
         <div className="flex flex-col sm:flex-row justify-between items-center text-sm">
           {/* Copyright */}
           <p className="text-gray-400 mb-4 sm:mb-0">
-            &copy; {currentYear} Chitrakolam. All rights reserved.
+            &copy; {currentYear} Hisaab.ai. All rights reserved.
           </p>
 
           {/* Social Icons */}

@@ -57,7 +57,7 @@ const LoginPage = () => {
     <div className="min-h-screen flex">
 
       {/* LEFT SECTION - Brand Identity with 3D Spline Animation */}
-      <div className="hidden md:flex flex-1 flex-col justify-center items-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 px-10 relative overflow-hidden">
+      <div className="hidden md:flex flex-1 flex-col justify-center items-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-10 relative overflow-hidden">
         {/* 3D Spline Scene Background */}
         <div className="absolute inset-0" style={{ transform: 'scale(1.9)', transformOrigin: 'center' }}>
           <Spline scene="https://prod.spline.design/vi-h88jX1pGoyilb/scene.splinecode" />
@@ -69,12 +69,12 @@ const LoginPage = () => {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="flex md:hidden justify-center mb-8">
-            <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-4 rounded-xl shadow-lg">
+            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-4 rounded-xl shadow-lg">
               <DollarSign className="w-8 h-8 text-white" strokeWidth={2.5} />
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-emerald-50/50 to-teal-50/50 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-emerald-100">
+          <div className="bg-gradient-to-br from-blue-50/50 to-indigo-50/50 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-blue-100">
             <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
               Login to Your Account
             </h2>
@@ -105,7 +105,7 @@ const LoginPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="you@example.com"
-                    className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
@@ -123,7 +123,7 @@ const LoginPage = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="Enter your password"
-                    className="w-full pl-11 pr-12 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                    className="w-full pl-11 pr-12 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                   <button
                     type="button"
@@ -138,10 +138,10 @@ const LoginPage = () => {
               {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500" />
+                  <input type="checkbox" className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
                   <span className="text-gray-600">Remember me</span>
                 </label>
-                <a href="#" className="text-emerald-600 hover:text-emerald-700 font-medium">
+                <a href="#" className="text-blue-600 hover:text-blue-700 font-medium">
                   Forgot password?
                 </a>
               </div>
@@ -150,7 +150,7 @@ const LoginPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white py-3 rounded-xl font-semibold shadow-lg shadow-emerald-200 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-200 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -172,7 +172,7 @@ const LoginPage = () => {
                 Don't have an account?{" "}
                 <a
                   href="/register"
-                  className="text-emerald-600 font-semibold hover:text-emerald-700 hover:underline transition-colors"
+                  className="text-blue-600 font-semibold hover:text-blue-700 hover:underline transition-colors"
                 >
                   Sign Up
                 </a>

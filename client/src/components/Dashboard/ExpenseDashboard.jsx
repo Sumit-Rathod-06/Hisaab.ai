@@ -120,9 +120,9 @@ const ExpenseDashboard = () => {
             currentAngle = endAngle;
 
             const colors = [
-                '#10b981',  // emerald-500
-                '#14b8a6',  // teal-500
-                '#06b6d4',  // cyan-500
+                '#2563eb',  // blue-600
+                '#4f46e5',  // indigo-600
+                '#7c3aed',  // violet-600
                 '#3b82f6'   // blue-500
             ];
 
@@ -160,7 +160,7 @@ const ExpenseDashboard = () => {
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Total Expense */}
-                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-6 text-white shadow-lg">
+                <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg">
                     <div className="flex items-center justify-between mb-4">
                         <div className="p-3 bg-white/20 rounded-xl">
                             <DollarSign size={24} />
@@ -180,8 +180,8 @@ const ExpenseDashboard = () => {
                 {/* Transactions */}
                 <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="p-3 bg-emerald-50 rounded-xl">
-                            <Receipt size={24} className="text-emerald-600" />
+                        <div className="p-3 bg-blue-50 rounded-xl">
+                            <Receipt size={24} className="text-blue-600" />
                         </div>
                         <BarChart3 size={22} className="text-gray-400" />
                     </div>
@@ -195,8 +195,8 @@ const ExpenseDashboard = () => {
                 {/* Average Transaction */}
                 <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="p-3 bg-teal-50 rounded-xl">
-                            <TrendingUp size={24} className="text-teal-600" />
+                        <div className="p-3 bg-indigo-50 rounded-xl">
+                            <TrendingUp size={24} className="text-indigo-600" />
                         </div>
                         <Wallet size={22} className="text-gray-400" />
                     </div>
@@ -234,7 +234,7 @@ const ExpenseDashboard = () => {
                     </div>
                     <div className="text-right">
                         <p className="text-sm text-gray-600">Average Daily</p>
-                        <p className="text-2xl font-bold text-emerald-600">₹{Math.round(avgDailySpending)}</p>
+                        <p className="text-2xl font-bold text-blue-600">₹{Math.round(avgDailySpending)}</p>
                     </div>
                 </div>
 
@@ -351,7 +351,7 @@ const ExpenseDashboard = () => {
                         </div>
                         <div className="text-center border-x border-gray-200">
                             <p className="text-sm text-gray-600 mb-1">Average</p>
-                            <p className="text-xl font-bold text-emerald-600">₹{Math.round(avgDailySpending)}</p>
+                            <p className="text-xl font-bold text-blue-600">₹{Math.round(avgDailySpending)}</p>
                             <p className="text-xs text-gray-500 mt-1">Daily spending</p>
                         </div>
                         <div className="text-center">
@@ -372,7 +372,7 @@ const ExpenseDashboard = () => {
                         <h2 className="text-xl font-bold text-gray-900">
                             Category-wise Spending
                         </h2>
-                        <button className="text-sm text-emerald-600 flex items-center gap-1">
+                        <button className="text-sm text-blue-600 flex items-center gap-1">
                             View All <ArrowUpRight size={16} />
                         </button>
                     </div>
@@ -518,19 +518,19 @@ const ExpenseDashboard = () => {
                     </div>
 
                     {/* Insights - Chatbot Style */}
-                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-400/20 via-emerald-400/20 to-cyan-400/20 backdrop-blur-xl border border-teal-200/50 shadow-lg">
+                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-400/20 via-indigo-400/20 to-purple-400/20 backdrop-blur-xl border border-blue-200/50 shadow-lg">
                         {/* Glass effect overlay */}
                         <div className="absolute inset-0 bg-white/40 backdrop-blur-md"></div>
 
                         <div className="relative z-10 p-6">
                             {/* Header */}
-                            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-teal-300/30">
-                                <div className="p-2.5 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-full shadow-lg">
+                            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-blue-300/30">
+                                <div className="p-2.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full shadow-lg">
                                     <Lightbulb size={18} className="text-white" />
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-bold text-gray-900">AI Insights</h2>
-                                    <p className="text-xs text-teal-700">Powered by Hisaab.ai</p>
+                                    <p className="text-xs text-blue-700">Powered by Hisaab.ai</p>
                                 </div>
                             </div>
 
@@ -543,15 +543,15 @@ const ExpenseDashboard = () => {
                                         style={{ animationDelay: `${index * 0.1}s` }}
                                     >
                                         {/* Avatar */}
-                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-emerald-500 flex items-center justify-center shadow-md">
+                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md">
                                             <span className="text-white text-xs font-bold">AI</span>
                                         </div>
 
                                         {/* Message Bubble */}
-                                        <div className="flex-1 bg-white/70 backdrop-blur-sm rounded-2xl rounded-tl-none p-4 shadow-md border border-teal-100/50 hover:bg-white/80 transition-all duration-200">
+                                        <div className="flex-1 bg-white/70 backdrop-blur-sm rounded-2xl rounded-tl-none p-4 shadow-md border border-blue-100/50 hover:bg-white/80 transition-all duration-200">
                                             <p className="text-sm text-gray-800 leading-relaxed">{insight}</p>
-                                            <div className="flex items-center gap-2 mt-2 text-xs text-teal-600">
-                                                <div className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-pulse"></div>
+                                            <div className="flex items-center gap-2 mt-2 text-xs text-blue-600">
+                                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
                                                 <span>Just now</span>
                                             </div>
                                         </div>
@@ -560,14 +560,14 @@ const ExpenseDashboard = () => {
 
                                 {/* Typing indicator */}
                                 <div className="flex items-center gap-3 opacity-50">
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-emerald-500 flex items-center justify-center shadow-md">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md">
                                         <span className="text-white text-xs font-bold">AI</span>
                                     </div>
-                                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl rounded-tl-none px-4 py-3 shadow-md border border-teal-100/50">
+                                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl rounded-tl-none px-4 py-3 shadow-md border border-blue-100/50">
                                         <div className="flex gap-1">
-                                            <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-                                            <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
-                                            <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
                                         </div>
                                     </div>
                                 </div>

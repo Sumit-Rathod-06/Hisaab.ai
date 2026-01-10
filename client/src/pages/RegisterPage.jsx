@@ -57,27 +57,27 @@ const RegisterPage = () => {
     <div className="min-h-screen flex">
 
       {/* LEFT SECTION - Brand Identity */}
-      <div className="hidden md:flex flex-1 flex-col justify-center items-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 px-10 relative overflow-hidden">
+      <div className="hidden md:flex flex-1 flex-col justify-center items-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-10 relative overflow-hidden">
         {/* Animated background spline elements */}
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-emerald-400 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-teal-400 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }}></div>
-          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-cyan-300 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }}></div>
+          <div className="absolute top-20 left-20 w-72 h-72 bg-blue-400 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-400 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }}></div>
+          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-purple-300 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }}></div>
         </div>
 
         {/* Floating geometric shapes */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-10 right-10 w-20 h-20 border-4 border-emerald-300/30 rounded-lg rotate-45 animate-bounce" style={{ animationDuration: '3s' }}></div>
-          <div className="absolute bottom-32 left-16 w-16 h-16 border-4 border-teal-300/30 rounded-full animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}></div>
-          <div className="absolute top-1/3 right-1/4 w-12 h-12 bg-emerald-200/20 rounded-lg rotate-12 animate-pulse" style={{ animationDuration: '3.5s' }}></div>
+          <div className="absolute top-10 right-10 w-20 h-20 border-4 border-blue-300/30 rounded-lg rotate-45 animate-bounce" style={{ animationDuration: '3s' }}></div>
+          <div className="absolute bottom-32 left-16 w-16 h-16 border-4 border-indigo-300/30 rounded-full animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}></div>
+          <div className="absolute top-1/3 right-1/4 w-12 h-12 bg-blue-200/20 rounded-lg rotate-12 animate-pulse" style={{ animationDuration: '3.5s' }}></div>
         </div>
 
         {/* SVG Spline Background Pattern */}
         <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style={{ stopColor: 'rgb(16, 185, 129)', stopOpacity: 0.3 }} />
-              <stop offset="100%" style={{ stopColor: 'rgb(20, 184, 166)', stopOpacity: 0.3 }} />
+              <stop offset="0%" style={{ stopColor: 'rgb(37, 99, 235)', stopOpacity: 0.3 }} />
+              <stop offset="100%" style={{ stopColor: 'rgb(79, 70, 229)', stopOpacity: 0.3 }} />
             </linearGradient>
           </defs>
           <path d="M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z" fill="url(#grad1)">
@@ -100,11 +100,11 @@ const RegisterPage = () => {
 
         <div className="flex flex-col items-center text-center max-w-md relative z-10">
           {/* Logo */}
-          <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-5 rounded-2xl mb-6 shadow-2xl animate-pulse" style={{ animationDuration: '2s' }}>
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-5 rounded-2xl mb-6 shadow-2xl animate-pulse" style={{ animationDuration: '2s' }}>
             <DollarSign className="w-12 h-12 text-white" strokeWidth={2.5} />
           </div>
 
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-3">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent mb-3">
             Hisaab.ai
           </h1>
 
@@ -117,12 +117,12 @@ const RegisterPage = () => {
           </p>
 
           <div className="grid grid-cols-2 gap-6 w-full">
-            <div className="flex flex-col items-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-emerald-100 hover:bg-white/80 transition-all">
-              <Shield className="w-6 h-6 text-emerald-600 mb-2" />
+            <div className="flex flex-col items-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-blue-100 hover:bg-white/80 transition-all">
+              <Shield className="w-6 h-6 text-blue-600 mb-2" />
               <span className="text-sm font-medium text-gray-700">Secure Data</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-emerald-100 hover:bg-white/80 transition-all">
-              <TrendingUp className="w-6 h-6 text-emerald-600 mb-2" />
+            <div className="flex flex-col items-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-blue-100 hover:bg-white/80 transition-all">
+              <TrendingUp className="w-6 h-6 text-blue-600 mb-2" />
               <span className="text-sm font-medium text-gray-700">Smart Analytics</span>
             </div>
           </div>
@@ -134,12 +134,12 @@ const RegisterPage = () => {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="flex md:hidden justify-center mb-8">
-            <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-4 rounded-xl shadow-lg">
+            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-4 rounded-xl shadow-lg">
               <DollarSign className="w-8 h-8 text-white" strokeWidth={2.5} />
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-emerald-50/50 to-teal-50/50 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-emerald-100">
+          <div className="bg-gradient-to-br from-blue-50/50 to-indigo-50/50 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-blue-100">
             <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
               Create Your Account
             </h2>
@@ -170,7 +170,7 @@ const RegisterPage = () => {
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     placeholder="your_username"
-                    className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
@@ -188,7 +188,7 @@ const RegisterPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="you@example.com"
-                    className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
@@ -206,7 +206,7 @@ const RegisterPage = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="Create password"
-                    className="w-full pl-11 pr-12 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                    className="w-full pl-11 pr-12 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                   <button
                     type="button"
@@ -231,7 +231,7 @@ const RegisterPage = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     placeholder="Re-enter password"
-                    className="w-full pl-11 pr-12 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                    className="w-full pl-11 pr-12 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                   <button
                     type="button"
@@ -247,7 +247,7 @@ const RegisterPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white py-3 rounded-xl font-semibold shadow-lg shadow-emerald-200 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-200 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -267,7 +267,7 @@ const RegisterPage = () => {
             <div className="mt-6 pt-6 border-t border-gray-200">
               <p className="text-center text-sm text-gray-600">
                 Already have an account?{" "}
-                <a href="/login" className="text-emerald-600 font-semibold hover:text-emerald-700 hover:underline transition-colors">
+                <a href="/login" className="text-blue-600 font-semibold hover:text-blue-700 hover:underline transition-colors">
                   Sign In
                 </a>
               </p>

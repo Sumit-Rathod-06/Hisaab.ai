@@ -62,10 +62,10 @@ const cards = [
 
 const FeaturesSection = () => {
     return (
-        <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-24 px-6">
+        <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-24 px-6">
             <div className="pointer-events-none absolute inset-0 opacity-60">
-                <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-emerald-400/15 blur-3xl" />
-                <div className="absolute -bottom-40 right-[-80px] h-[520px] w-[520px] rounded-full bg-teal-400/10 blur-3xl" />
+                <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-blue-400/15 blur-3xl" />
+                <div className="absolute -bottom-40 right-[-80px] h-[520px] w-[520px] rounded-full bg-indigo-400/10 blur-3xl" />
             </div>
 
             <div className="relative z-10 mx-auto max-w-7xl">
@@ -88,7 +88,7 @@ const FeaturesSection = () => {
                     clickEffect={false}
                     enableStars={false}
                     spotlightRadius={310}
-                    glowColor="16, 185, 129"
+                    glowColor="37, 99, 235"
                 />
             </div>
         </section>

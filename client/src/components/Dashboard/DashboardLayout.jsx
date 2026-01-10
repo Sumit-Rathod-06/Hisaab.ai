@@ -44,10 +44,10 @@ const DashboardLayout = ({ children }) => {
                                 {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
                             </button>
                             <div className="flex items-center gap-2">
-                                <div className="p-1.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg">
+                                <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg">
                                     <DollarSign className="w-5 h-5 text-white" strokeWidth={2.5} />
                                 </div>
-                                <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
                                     Hisaab.ai
                                 </span>
                             </div>
@@ -57,7 +57,7 @@ const DashboardLayout = ({ children }) => {
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={handleLogout}
-                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
                             >
                                 <LogOut size={18} />
                                 <span className="hidden sm:inline">Logout</span>
@@ -84,7 +84,7 @@ const DashboardLayout = ({ children }) => {
                 w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium
                 transition-all duration-200
                 ${item.active
-                                    ? 'bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-600 border border-emerald-200'
+                                    ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-600 border border-blue-200'
                                     : 'text-gray-700 hover:bg-gray-50'
                                 }
               `}
