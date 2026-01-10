@@ -1,40 +1,40 @@
-import {
-  GraduationCap,
-  Briefcase,
-  TrendingUp,
-  Target
-} from "lucide-react";
+import studentIcon from "../../assets/Student.png";
+import professionalIcon from "../../assets/young_professional.png";
+import investorIcon from "../../assets/investor.png";
+import goalIcon from "../../assets/Goal.png";
+
 
 const audienceData = [
   {
     title: "College Students",
     description:
       "Learn to manage finances early and build strong money habits for the future.",
-    icon: GraduationCap,
-    color: "bg-emerald-100 text-emerald-600",
+    icon: studentIcon,
+    color: "bg-emerald-100",
   },
   {
     title: "Young Professionals",
     description:
       "Balance career growth with smart saving, investing, and financial planning.",
-    icon: Briefcase,
-    color: "bg-blue-100 text-blue-600",
+    icon: professionalIcon,
+    color: "bg-blue-100",
   },
   {
     title: "First-Time Investors",
     description:
       "Navigate the investment world confidently with clear guidance and insights.",
-    icon: TrendingUp,
-    color: "bg-orange-100 text-orange-600",
+    icon: investorIcon,
+    color: "bg-orange-100",
   },
   {
     title: "Goal Planners",
     description:
       "Plan major milestones like buying a home, travel, or early retirement.",
-    icon: Target,
-    color: "bg-teal-100 text-teal-600",
+    icon: goalIcon,
+    color: "bg-teal-100",
   },
 ];
+
 
 const Audience = () => {
   return (
@@ -49,29 +49,31 @@ const Audience = () => {
         </p>
 
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {audienceData.map((item, index) => {
-            const Icon = item.icon;
-            return (
+          {audienceData.map((item, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2"
+            >
               <div
-                key={index}
-                className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2"
+                className={`w-14 h-14 mx-auto flex items-center justify-center rounded-full ${item.color}`}
               >
-                <div
-                  className={`w-14 h-14 mx-auto flex items-center justify-center rounded-full ${item.color}`}
-                >
-                  <Icon size={26} />
-                </div>
-
-                <h3 className="mt-6 text-lg font-semibold text-gray-900">
-                  {item.title}
-                </h3>
-
-                <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-                  {item.description}
-                </p>
+                <img
+                  src={item.icon}
+                  alt={item.title}
+                  className="w-7 h-7 object-contain"
+                  loading="lazy"
+                />
               </div>
-            );
-          })}
+
+              <h3 className="mt-6 text-lg font-semibold text-gray-900">
+                {item.title}
+              </h3>
+
+              <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -79,3 +81,4 @@ const Audience = () => {
 };
 
 export default Audience;
+
