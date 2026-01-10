@@ -3,6 +3,7 @@
 import os
 import uuid
 import json
+import pandas as pd
 import psycopg
 from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
@@ -233,19 +234,6 @@ def update_milestone(
                 raise ValueError("Goal not found for this user")
 
             goal_plan = row[0]
-
-            # Delete old version
-            cur.execute(
-                """
-                DELETE FROM goals
-                WHERE id = %s AND user_id = %s
-                """,
-                (goal_id, user_id)
-            )
-
-            if cur.rowcount == 0:
-                raise RuntimeError("Delete failed: goal still exists")
-
             conn.commit()
 
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -259,24 +247,6 @@ def update_milestone(
         expense_analysis
     )
 
-    # Insert updated version
-    with get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                INSERT INTO goals (user_id, purpose, amount, months, plan)
-                VALUES (%s, %s, %s, %s, %s)
-                """,
-                (
-                    user_id,
-                    updated_plan["goal"]["purpose"],
-                    updated_plan["goal"]["amount"],
-                    updated_plan["goal"]["time_period_months"],
-                    json.dumps(updated_plan)
-                )
-            )
-            conn.commit()
-
     return updated_plan
 
 @mcp.tool()
@@ -288,11 +258,6 @@ def finance_chat(question: str):
     answer = agent.run(question)
 
     return {"answer": answer}
-
-
-# ----------------------------
-# Run Server
-# ----------------------------
 
 if __name__ == "__main__":
     mcp.run()
