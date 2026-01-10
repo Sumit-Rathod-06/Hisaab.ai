@@ -24,9 +24,9 @@ const App = () => {
         <Route
           path="dashboard"
           element={
-            <PrivateRoute>
+            
               <DashBoardPage />
-            </PrivateRoute>
+            
           }
         />
         <Route
