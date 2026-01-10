@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     TrendingUp,
     Receipt,
@@ -12,57 +12,48 @@ import {
     Lightbulb,
     Dot
 } from 'lucide-react';
+import axios from 'axios';
 
 const ExpenseDashboard = () => {
     const [hoveredPoint, setHoveredPoint] = useState(null);
     const [hoveredSlice, setHoveredSlice] = useState(null);
-    const dashboardData = {
-        total_expense: 9800,
-        expense_count: 35,
-        category_wise_spending: {
-            Food: 4200,
-            Rent: 3000,
-            Travel: 1800,
-            Subscriptions: 800
-        },
-        top_3_categories: ['Food', 'Rent', 'Travel'],
-        average_transaction_value: 280.0,
-        highest_single_expense: {
-            date: '2024-12-03',
-            amount: 3000,
-            category: 'Rent',
-            merchant: 'House Rent'
-        },
-        insights: [
-            'Rent remains constant month-on-month',
-            'Food spending slightly increased during holidays'
-        ],
-        daily_spending: [
-            { date: 'Dec 20', amount: 180 },
-            { date: 'Dec 21', amount: 320 },
-            { date: 'Dec 22', amount: 250 },
-            { date: 'Dec 23', amount: 450 },
-            { date: 'Dec 24', amount: 380 },
-            { date: 'Dec 25', amount: 520 },
-            { date: 'Dec 26', amount: 290 },
-            { date: 'Dec 27', amount: 410 },
-            { date: 'Dec 28', amount: 350 },
-            { date: 'Dec 29', amount: 480 },
-            { date: 'Dec 30', amount: 320 },
-            { date: 'Dec 31', amount: 550 },
-            { date: 'Jan 1', amount: 620 },
-            { date: 'Jan 2', amount: 280 },
-            { date: 'Jan 3', amount: 340 },
-            { date: 'Jan 4', amount: 390 },
-            { date: 'Jan 5', amount: 460 },
-            { date: 'Jan 6', amount: 310 },
-            { date: 'Jan 7', amount: 370 },
-            { date: 'Jan 8', amount: 420 },
-            { date: 'Jan 9', amount: 500 },
-            { date: 'Jan 10', amount: 380 }
-        ]
-    };
+    const [dashboardData, setDashboardData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get("http://localhost:5000/api/finance/expense");
+                console.log("API Response:", response.data);
+                setDashboardData(response.data);
+            } catch (error) {
+                console.error("Error fetching expense data:", error);
+                console.error("Error details:", error.response?.data || error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading dashboard...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!dashboardData || !dashboardData.daily_spending || !dashboardData.category_wise_spending) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p className="text-red-600">Failed to load dashboard data</p>
+            </div>
+        );
+    }
     const getCategoryPercentage = (amount) =>
         ((amount / dashboardData.total_expense) * 100).toFixed(1);
 

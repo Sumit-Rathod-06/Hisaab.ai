@@ -44,45 +44,92 @@ router.post("/upload", async (req, res) => {
 });
 
 router.get("/expense", async (req, res) => {
-  req.setTimeout(300000);
+  // req.setTimeout(300000);
 
-  try {
-    const userId = req.user?.id;
+  // try {
+  //   const mcp = await getMCPClient();
 
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    const mcp = await getMCPClient();
+  //   const result = await mcp.callTool(
+  //     {
+  //       name: "expense_analysis",
+  //       arguments: {}
+  //     },
+  //     undefined,
+  //     { timeout: 300000 }
+  //   );
 
-    const result = await mcp.callTool(
-      {
-        name: "expense_analysis",
-        arguments: { user_id: userId },
+  //   // SAFETY CHECK
+  //   const rawText =
+  //     result?.content?.[0]?.text || "";
+
+  //   if (!rawText) {
+  //     return res.status(500).json({
+  //       error: "Empty response from expense_analysis tool"
+  //     });
+  //   }
+
+  //   // CLEAN + PARSE
+  //   const cleanedText = rawText.replace(/```json|```/g, "").trim();
+  //   const jsonObject = JSON.parse(cleanedText);
+
+  //   // OPTIONAL: Validate minimum required fields
+  //   if (!jsonObject.total_expense || !jsonObject.category_wise_spending) {
+  //     return res.status(500).json({
+  //       error: "Invalid expense analysis format",
+  //       raw: jsonObject
+  //     });
+  //   }
+
+  //   res.json(jsonObject);
+
+  // } catch (err) {
+  //   console.error("Expense analysis error:", err);
+  //   res.status(500).json({ error: err.message });
+  // }
+
+  return res.json(
+    {
+      "total_expense": 2183.02,
+      "expense_count": 20,
+      "category_wise_spending": {
+        "Others": 1110,
+        "Food & Dining": 396,
+        "Online Shopping": 260.12,
+        "Mobile Recharge": 240.9,
+        "Groceries": 110,
+        "Pharmacy": 62,
+        "Shopping": 4
       },
-      undefined,
-      {
-        timeout: 300000,
-      }
-    );
-
-    // Fix: Access the text inside the first array element
-    const rawText = result.content[0].text;
-
-    try {
-      // Clean and Parse the JSON string into an object
-      const cleanedText = rawText.replace(/```json|```/g, "").trim();
-      const jsonObject = JSON.parse(cleanedText);
-
-      res.json(jsonObject);
-    } catch (parseErr) {
-      console.error("Expense JSON Parsing failed:", parseErr);
-      res.json({ analysis: rawText });
+      "top_3_categories": [
+        {
+          "category": "Others",
+          "amount": 1110
+        },
+        {
+          "category": "Food & Dining",
+          "amount": 396
+        },
+        {
+          "category": "Online Shopping",
+          "amount": 260.12
+        }
+      ],
+      "average_transaction_value": 109.15,
+      "highest_single_expense": {
+        "amount": 396,
+        "category": "Food & Dining",
+        "description": "Paid to ZOMATO LIMITED",
+        "date": "05 Dec 2025"
+      },
+      "ai_insights": [
+        "Re-evaluating \"Others\" category expenses (₹1110, 50.8% of your spending) to identify and eliminate unnecessary subscriptions or recurring charges could save you ₹500+ annually.",
+        "Reducing food and dining expenses by 25% (₹99 from ₹396) through meal prepping or cooking at home can free up ₹1188 annually for investments or debt repayment.",
+        "Decreasing online shopping purchases by half (₹130.06 from ₹260.12) and investing that amount in an index fund with an average 7% annual return could yield approximately ₹140 next year."
+      ]
     }
-  } catch (err) {
-    console.error("Expense analysis error:", err);
-    res.status(500).json({ error: err.message });
-  }
+  )
 });
+
 
 router.post("/goal", async (req, res) => {
   req.setTimeout(300000);
@@ -201,6 +248,39 @@ router.get("/alerts", async (req, res) => {
       }
     ]
   });
+});
+
+router.get("/transactions", async (req, res) => {
+  try {
+    const userId = "d8f24ba0-b99d-4433-be84-7959d5298ff0";
+
+    const result = await pool.query(
+      `
+      SELECT 
+        id,
+        upload_id,
+        date,
+        description,
+        amount,
+        transaction_type,
+        category,
+        created_at
+      FROM transactions
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+      `,
+      [userId]
+    );
+
+    res.json({
+      count: result.rowCount,
+      transactions: result.rows
+    });
+
+  } catch (err) {
+    console.error("Fetch transactions error:", err);
+    res.status(500).json({ error: "Failed to fetch transactions" });
+  }
 });
 
 router.get("/summary", async (req, res) => {
