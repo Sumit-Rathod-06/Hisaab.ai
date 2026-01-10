@@ -14,6 +14,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import ExpenseAnalysisPage from "./pages/ExpenseAnalysisPage";
 import ProfilePage from "./pages/ProfilePage";
 import GoalPage from './pages/GoalPage';
+import Alerts from "./pages/AlertsPage.jsx";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -48,6 +49,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
+        <Route path="/alerts" element={<Alerts />} />
       </Route>
     )
   );
