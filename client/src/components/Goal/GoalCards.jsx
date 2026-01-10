@@ -131,7 +131,7 @@ export default function GoalCards() {
               key={index}
               className={`
                 rounded-3xl p-6
-                bg-gradient-to-br ${card.gradient}
+                bg-linear-to-br ${card.gradient}
                 text-white
                 transition-all duration-500
                 hover:-translate-y-2
