@@ -16,9 +16,7 @@ const ProfileForm = ({ profile, onSave, loading }) => {
   });
 
   useEffect(() => {
-    if (profile) {
-      setFormData(profile);
-    }
+    if (profile) setFormData(profile);
   }, [profile]);
 
   const handleChange = (e) => {
@@ -35,226 +33,209 @@ const ProfileForm = ({ profile, onSave, loading }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto"
-    >
-      {/* Personal Information Section */}
-      <div className="mb-8">
-        <h3 className="text-2xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-blue-500">
-          Personal Information
-        </h3>
-
-        <div className="mb-6">
-          <label className="block text-gray-700 font-semibold mb-2">
-            Full Name
-          </label>
-          <input
-            type="text"
-            name="full_name"
-            value={formData.full_name}
-            onChange={handleChange}
-            placeholder="Enter your full name"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Age
-            </label>
-            <input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleChange}
-              placeholder="Enter your age"
-              min="18"
-              max="120"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              City
-            </label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="Enter your city"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Marital Status
-            </label>
-            <select
-              name="marital_status"
-              value={formData.marital_status}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            >
-              <option value="single">Single</option>
-              <option value="married">Married</option>
-              <option value="divorced">Divorced</option>
-              <option value="widowed">Widowed</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Number of Dependents
-            </label>
-            <input
-              type="number"
-              name="dependents_count"
-              value={formData.dependents_count}
-              onChange={handleChange}
-              min="0"
-              max="10"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Employment & Income Section */}
-      <div className="mb-8">
-        <h3 className="text-2xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-blue-500">
-          Employment & Income
-        </h3>
-
-        <div className="mb-6">
-          <label className="block text-gray-700 font-semibold mb-2">
-            Employment Type
-          </label>
-          <select
-            name="employment_type"
-            value={formData.employment_type}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-          >
-            <option value="">Select employment type</option>
-            <option value="employed">Employed</option>
-            <option value="self-employed">Self-Employed</option>
-            <option value="freelancer">Freelancer</option>
-            <option value="student">Student</option>
-            <option value="retired">Retired</option>
-            <option value="unemployed">Unemployed</option>
-          </select>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Monthly Income
-            </label>
-            <input
-              type="number"
-              name="monthly_income"
-              value={formData.monthly_income}
-              onChange={handleChange}
-              placeholder="Enter monthly income"
-              step="0.01"
-              min="0"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Income Type
-            </label>
-            <select
-              name="income_type"
-              value={formData.income_type}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            >
-              <option value="">Select income type</option>
-              <option value="salary">Salary</option>
-              <option value="business">Business Income</option>
-              <option value="investments">Investments</option>
-              <option value="freelance">Freelance</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Financial Profile Section */}
-      <div className="mb-8">
-        <h3 className="text-2xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-blue-500">
-          Financial Profile
-        </h3>
-
-        <div className="mb-6">
-          <label className="block text-gray-700 font-semibold mb-2">
-            Risk Profile
-          </label>
-          <select
-            name="risk_profile"
-            value={formData.risk_profile}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-          >
-            <option value="low">Low Risk (Conservative)</option>
-            <option value="medium">Medium Risk (Balanced)</option>
-            <option value="high">High Risk (Aggressive)</option>
-          </select>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Emergency Fund Amount
-            </label>
-            <input
-              type="number"
-              name="emergency_fund_amount"
-              value={formData.emergency_fund_amount}
-              onChange={handleChange}
-              placeholder="Enter emergency fund amount"
-              step="0.01"
-              min="0"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            />
-          </div>
-
-          <div className="flex items-end">
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                name="has_insurance"
-                checked={formData.has_insurance}
-                onChange={handleChange}
-                className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-              />
-              <span className="ml-3 text-gray-700 font-semibold">
-                Have Insurance
-              </span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded-lg transition transform hover:scale-105 disabled:cursor-not-allowed"
+    /* PAGE BACKGROUND */
+    <div className="bg-white min-h-screen flex items-center justify-center px-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-7xl bg-white rounded-2xl shadow-xl px-8 py-8"
       >
-        {loading ? "Saving..." : "Save Profile"}
-      </button>
-    </form>
+        {/* SECTIONS GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* PERSONAL INFO */}
+          <Section>
+            <SectionHeader
+              title="Personal information"
+              description="Update your personal details."
+            />
+
+            <div className="space-y-4">
+              <Input
+                label="Full name"
+                name="full_name"
+                value={formData.full_name}
+                onChange={handleChange}
+              />
+
+              <Input
+                label="City"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+              />
+
+              <Input
+                label="Age"
+                name="age"
+                type="number"
+                value={formData.age}
+                onChange={handleChange}
+              />
+
+              <Select
+                label="Marital status"
+                name="marital_status"
+                value={formData.marital_status}
+                onChange={handleChange}
+                options={["single", "married", "divorced", "widowed"]}
+              />
+
+              <Input
+                label="Dependents"
+                name="dependents_count"
+                type="number"
+                value={formData.dependents_count}
+                onChange={handleChange}
+              />
+            </div>
+          </Section>
+
+          {/* EMPLOYMENT */}
+          <Section>
+            <SectionHeader
+              title="Employment & income"
+              description="Your professional & income details."
+            />
+
+            <div className="space-y-4">
+              <Select
+                label="Employment type"
+                name="employment_type"
+                value={formData.employment_type}
+                onChange={handleChange}
+                options={[
+                  "employed",
+                  "self-employed",
+                  "freelancer",
+                  "student",
+                  "retired",
+                  "unemployed",
+                ]}
+              />
+
+              <Input
+                label="Monthly income"
+                name="monthly_income"
+                value={formData.monthly_income}
+                onChange={handleChange}
+              />
+
+              <Select
+                label="Income type"
+                name="income_type"
+                value={formData.income_type}
+                onChange={handleChange}
+                options={[
+                  "salary",
+                  "business",
+                  "investments",
+                  "freelance",
+                  "other",
+                ]}
+              />
+            </div>
+          </Section>
+
+          {/* FINANCIAL PROFILE */}
+          <Section>
+            <SectionHeader
+              title="Financial profile"
+              description="Risk preferences & safeguards."
+            />
+
+            <div className="space-y-4">
+              <Select
+                label="Risk profile"
+                name="risk_profile"
+                value={formData.risk_profile}
+                onChange={handleChange}
+                options={["low", "medium", "high"]}
+              />
+
+              <Input
+                label="Emergency fund"
+                name="emergency_fund_amount"
+                value={formData.emergency_fund_amount}
+                onChange={handleChange}
+              />
+
+              <label className="flex items-center gap-3 text-sm text-slate-700 pt-2">
+                <input
+                  type="checkbox"
+                  name="has_insurance"
+                  checked={formData.has_insurance}
+                  onChange={handleChange}
+                  className="w-5 h-5 rounded border border-blue-300 text-blue-600 focus:ring-blue-500"
+                />
+                Insurance coverage available
+              </label>
+            </div>
+          </Section>
+        </div>
+
+        {/* ACTION FOOTER */}
+        <div className="flex justify-end mt-8 border-t pt-6">
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-8 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-50 shadow-md"
+          >
+            {loading ? "Saving..." : "Save"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
+
+/* ---------- UI HELPERS ---------- */
+
+const Section = ({ children }) => (
+  <div className="p-6 rounded-xl bg-blue-50 border border-blue-100 h-full">
+    {children}
+  </div>
+);
+
+const SectionHeader = ({ title, description }) => (
+  <div className="mb-5">
+    <h3 className="text-lg font-semibold text-slate-900 mb-1">
+      {title}
+    </h3>
+    <p className="text-sm text-slate-500">{description}</p>
+  </div>
+);
+
+/* ---------- INPUTS ---------- */
+
+const Input = ({ label, ...props }) => (
+  <div>
+    <label className="block text-sm font-medium text-slate-600 mb-1">
+      {label}
+    </label>
+    <input
+      {...props}
+      className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+    />
+  </div>
+);
+
+const Select = ({ label, options, ...props }) => (
+  <div>
+    <label className="block text-sm font-medium text-slate-600 mb-1">
+      {label}
+    </label>
+    <select
+      {...props}
+      className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+    >
+      <option value="">Select</option>
+      {options.map((o) => (
+        <option key={o} value={o}>
+          {o.charAt(0).toUpperCase() + o.slice(1)}
+        </option>
+      ))}
+    </select>
+  </div>
+);
 
 export default ProfileForm;

@@ -5,47 +5,58 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+import { Suspense, lazy } from "react";
 
-import Landingpage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashBoardPage from "./pages/DashBoardPage";
 import PrivateRoute from "./components/PrivateRoute";
 import ExpenseAnalysisPage from "./pages/ExpenseAnalysisPage";
 import ProfilePage from "./pages/ProfilePage";
-import GoalPage from './pages/GoalPage';
+import GoalPage from "./pages/GoalPage";
+import Loader from "./components/ui/Loader";
+
+// Landing page loaded with loader
+const Landingpage = lazy(() => import("./pages/LandingPage"));
 
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/">
-        <Route index element={<Landingpage />} />
+        <Route
+          index
+          element={
+            <Suspense fallback={<Loader text="Loading Hisaab.ai..." />}>
+              <Landingpage />
+            </Suspense>
+          }
+        />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
-        <Route path='dashboard' element={<DashBoardPage/>}/>
-        <Route path='goalpage' element={<GoalPage/>}/>
+        <Route path="dashboard" element={<DashBoardPage />} />
+        <Route path="goalpage" element={<GoalPage />} />
         <Route
           path="dashboard"
           element={
-            <PrivateRoute>
+            // <PrivateRoute>
               <DashBoardPage />
-            </PrivateRoute>
+            // </PrivateRoute>
           }
         />
         <Route
           path="expense_analysis"
           element={
-            <PrivateRoute>
+            // <PrivateRoute>
               <ExpenseAnalysisPage />
-            </PrivateRoute>
+            // </PrivateRoute>
           }
         />
         <Route
           path="profile"
           element={
-            <PrivateRoute>
+            // <PrivateRoute>
               <ProfilePage />
-            </PrivateRoute>
+            // </PrivateRoute>
           }
         />
       </Route>

@@ -109,9 +109,9 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4 md:p-8">
+    <div className="min-h-screen bg-white via-purple-500 to-pink-500 p-4 md:p-8">
       {/* Page Header */}
-      <div className="text-center text-white mb-8">
+      <div className="text-center text-black mb-8">
         <h1 className="text-4xl font-bold mb-2">My Financial Profile</h1>
         <p className="text-lg opacity-90">
           Manage your personal and financial information
@@ -142,7 +142,7 @@ const ProfilePage = () => {
           />
           <button
             onClick={handleCancel}
-            className="w-full max-w-4xl mx-auto mt-6 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition transform hover:scale-105"
+            className="w-full max-w-4xl mx-68 mt-6 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition transform hover:scale-105"
           >
             Cancel
           </button>
@@ -150,7 +150,7 @@ const ProfilePage = () => {
       ) : profile ? (
         <ProfileDisplay profile={profile} onEdit={handleEditClick} />
       ) : (
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-12 text-center">
+        <div className="max-w-2xl mx-auto bg-blue-50 rounded-lg shadow-lg p-12 text-center">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
             No Profile Found
           </h2>
