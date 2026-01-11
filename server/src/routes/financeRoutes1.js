@@ -6,6 +6,11 @@ import path from "path";
 import crypto from "crypto";
 import multer from "multer";
 
+const uploadDir = "uploads";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
@@ -30,11 +35,6 @@ const router = express.Router();
 /* ================================
    TEMP CSV STORAGE
 ================================ */
-
-const uploadDir = "uploads";
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
 
 const saveTransactionsAsCSV = (transactions, uploadId) => {
   const csvPath = path.join(uploadDir, `${uploadId}.csv`);
@@ -439,7 +439,7 @@ router.post("/transactions/modify", async (req, res) => {
 
 router.get("/transactions", async (req, res) => {
   try {
-    const userId = "cc683836-754d-498c-88cd-0c29acb7e50d";
+    const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const result = await db.query(
