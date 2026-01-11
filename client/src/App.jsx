@@ -20,6 +20,7 @@ import Loader from "./components/ui/Loader";
 const Landingpage = lazy(() => import("./pages/LandingPage"));
 import Alerts from "./pages/AlertsPage.jsx";
 import TransactionsPage from "./pages/TransactionsPage.jsx";
+import InvestmentPage from  "./pages/InvestmentPage";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -62,6 +63,7 @@ const App = () => {
         />
         <Route path="/alerts" element={<Alerts />} />
         <Route path="/transactions" element={<TransactionsPage />} />
+        <Route path="/investments" element={<InvestmentPage />} />
       </Route>
     )
   );

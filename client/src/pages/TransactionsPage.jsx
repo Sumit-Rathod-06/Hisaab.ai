@@ -194,7 +194,7 @@ const TransactionsPage = () => {
                                             <p className="text-gray-600 mb-4">or</p>
                                             <label
                                                 htmlFor="file-upload"
-                                                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all cursor-pointer font-medium"
+                                                className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-indigo-700 text-white rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all cursor-pointer font-medium"
                                             >
                                                 <FileText size={20} />
                                                 Browse Files
@@ -249,6 +249,128 @@ const TransactionsPage = () => {
                     /* Review & Edit Section */
                     <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
                         {/* review section code remains unchanged */}
+                        <div className="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-900">Review AI-Extracted Transactions</h2>
+                                <p className="text-sm text-yellow-700 mt-1 flex items-center gap-2">
+                                    <AlertCircle size={16} />
+                                    Review and edit any incorrect transactions before saving
+                                </p>
+                            </div>
+                            <button
+                                onClick={finishReview}
+                                className="px-6 py-3 bg-linear-to-r from-green-600 to-emerald-700 text-white rounded-lg hover:from-green-700 hover:to-emerald-800 transition-all font-medium flex items-center gap-2"
+                            >
+                                <Check size={20} />
+                                Finalize & Save
+                            </button>
+                        </div>
+
+                        <div className="space-y-3">
+                            {tempTransactions.map((transaction, index) => (
+                                <div
+                                    key={transaction.txn_id || index}
+                                    className={`p-4 rounded-xl border-2 transition-all ${transaction.corrected
+                                        ? 'border-green-300 bg-green-50'
+                                        : 'border-yellow-300 bg-yellow-50'
+                                        }`}
+                                >
+                                    {editingId === transaction.txn_id ? (
+                                        /* Edit Mode */
+                                        <div className="space-y-3">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Description"
+                                                    value={editForm.description || ''}
+                                                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                                                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    placeholder="Amount"
+                                                    value={editForm.amount || ''}
+                                                    onChange={(e) => setEditForm({ ...editForm, amount: parseFloat(e.target.value) })}
+                                                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Category"
+                                                    value={editForm.category || ''}
+                                                    onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                                                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Date"
+                                                    value={editForm.date || ''}
+                                                    onChange={(e) => setEditForm({ ...editForm, date: e.target.value })}
+                                                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                />
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => saveEdit(transaction.txn_id)}
+                                                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                                                >
+                                                    <Check size={16} />
+                                                    Save
+                                                </button>
+                                                <button
+                                                    onClick={cancelEdit}
+                                                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors flex items-center gap-2"
+                                                >
+                                                    <X size={16} />
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        /* View Mode */
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-4 flex-1">
+                                                <div className={`p-3 rounded-lg ${transaction.corrected ? 'bg-green-100' : 'bg-yellow-100'}`}>
+                                                    {transaction.corrected ? (
+                                                        <CheckCircle size={20} className="text-green-600" />
+                                                    ) : (
+                                                        <AlertCircle size={20} className="text-yellow-600" />
+                                                    )}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <h4 className="font-semibold text-gray-900">
+                                                        {transaction.description || 'Transaction'}
+                                                    </h4>
+                                                    <div className="flex items-center gap-4 mt-1">
+                                                        <span className="text-sm text-gray-500 flex items-center gap-1">
+                                                            <Calendar size={14} />
+                                                            {transaction.date || 'N/A'}
+                                                        </span>
+                                                        {transaction.category && (
+                                                            <span className="text-sm bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full flex items-center gap-1">
+                                                                <Tag size={12} />
+                                                                {transaction.category}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <span className="text-lg font-bold text-gray-900">
+                                                    ₹{transaction.amount?.toLocaleString() || '0'}
+                                                </span>
+                                                <button
+                                                    onClick={() => startEdit(transaction)}
+                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    title="Edit transaction"
+                                                >
+                                                    <Edit2 size={18} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>

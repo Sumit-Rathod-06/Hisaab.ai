@@ -57,7 +57,7 @@ const RegisterPage = () => {
     <div className="min-h-screen flex">
 
       {/* LEFT SECTION - Brand Identity */}
-      <div className="hidden md:flex flex-1 flex-col justify-center items-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-10 relative overflow-hidden">
+      <div className="hidden md:flex flex-1 flex-col justify-center items-center bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 px-10 relative overflow-hidden">
         {/* Animated background spline elements */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-20 left-20 w-72 h-72 bg-blue-400 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
@@ -100,11 +100,11 @@ const RegisterPage = () => {
 
         <div className="flex flex-col items-center text-center max-w-md relative z-10">
           {/* Logo */}
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-5 rounded-2xl mb-6 shadow-2xl animate-pulse" style={{ animationDuration: '2s' }}>
+          <div className="bg-linear-to-br from-blue-600 to-indigo-700 p-5 rounded-2xl mb-6 shadow-2xl animate-pulse" style={{ animationDuration: '2s' }}>
             <DollarSign className="w-12 h-12 text-white" strokeWidth={2.5} />
           </div>
 
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent mb-3">
+          <h1 className="text-5xl font-bold bg-linear-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent mb-3">
             Hisaab.ai
           </h1>
 
@@ -134,12 +134,12 @@ const RegisterPage = () => {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="flex md:hidden justify-center mb-8">
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-4 rounded-xl shadow-lg">
+            <div className="bg-linear-to-br from-blue-600 to-indigo-700 p-4 rounded-xl shadow-lg">
               <DollarSign className="w-8 h-8 text-white" strokeWidth={2.5} />
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-50/50 to-indigo-50/50 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-blue-100">
+          <div className="bg-linear-to-br from-blue-50/50 to-indigo-50/50 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-blue-100">
             <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
               Create Your Account
             </h2>
@@ -247,7 +247,7 @@ const RegisterPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-200 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full bg-linear-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-200 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
