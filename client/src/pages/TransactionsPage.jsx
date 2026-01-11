@@ -30,9 +30,12 @@ const TransactionsPage = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://localhost:5000/api/finance/transactions/verified', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await axios.get(
+                'http://localhost:5000/api/finance/transactions',
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
             setSavedTransactions(response.data.transactions || []);
         } catch (error) {
             console.error('Error fetching saved transactions:', error);
@@ -86,34 +89,37 @@ const TransactionsPage = () => {
 
         try {
             setUploading(true);
+
             const formData = new FormData();
-            formData.append('pdf', file);
+            formData.append('pdf', file); // MUST be "pdf"
 
             const token = localStorage.getItem('token');
+
             const response = await axios.post(
-                'http://localhost:5000/api/finance/uploadPdf',
+                'http://localhost:5000/api/finance/upload',
                 formData,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${token}` // ❗ DO NOT set Content-Type
                     }
                 }
             );
 
-            // Get upload_id and fetch temp transactions
             const uploadIdFromResponse = response.data.upload_id;
             setUploadId(uploadIdFromResponse);
 
-            // Fetch temporary transactions from CSV
+            // Fetch extracted transactions from CSV
             const tempResponse = await axios.get(
                 `http://localhost:5000/api/finance/transactions/${uploadIdFromResponse}`,
-                { headers: { Authorization: `Bearer ${token}` } }
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
             );
 
             setTempTransactions(tempResponse.data.transactions || []);
             setReviewing(true);
             setFile(null);
+
         } catch (error) {
             console.error('Upload error:', error);
             alert(error.response?.data?.error || 'Failed to upload file');
@@ -123,7 +129,7 @@ const TransactionsPage = () => {
     };
 
     const startEdit = (transaction) => {
-        setEditingId(transaction.id);
+        setEditingId(transaction.txn_id);
         setEditForm({
             description: transaction.description,
             amount: transaction.amount,
@@ -141,18 +147,23 @@ const TransactionsPage = () => {
         try {
             const token = localStorage.getItem('token');
             await axios.post(
-                `http://localhost:5000/api/finance/transactions/correct`,
+                'http://localhost:5000/api/finance/transactions/modify',
                 {
                     upload_id: uploadId,
-                    transaction_id: transactionId,
-                    corrections: editForm
+                    txn_id: transactionId,
+                    corrected_description: editForm.description,
+                    corrected_amount: editForm.amount,
+                    corrected_category: editForm.category
                 },
-                { headers: { Authorization: `Bearer ${token}` } }
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
             );
+
 
             // Update local state
             setTempTransactions(prev =>
-                prev.map(t => t.id === transactionId ? { ...t, ...editForm, corrected: true } : t)
+                prev.map(t => t.txn_id === transactionId ? { ...t, ...editForm, corrected: true } : t)
             );
             setEditingId(null);
             setEditForm({});
@@ -164,18 +175,11 @@ const TransactionsPage = () => {
 
     const finishReview = async () => {
         try {
-            const token = localStorage.getItem('token');
-            await axios.post(
-                `http://localhost:5000/api/finance/transactions/finalize`,
-                { upload_id: uploadId },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            // Clear review state and refresh saved transactions
+                // CSV already exists
+                // Corrections already saved
             setReviewing(false);
             setTempTransactions([]);
             setUploadId(null);
-            fetchSavedTransactions();
         } catch (error) {
             console.error('Error finalizing transactions:', error);
             alert('Failed to finalize transactions');
@@ -383,13 +387,13 @@ const TransactionsPage = () => {
                         <div className="space-y-3">
                             {tempTransactions.map((transaction, index) => (
                                 <div
-                                    key={transaction.id || index}
+                                    key={transaction.txn_id || index}
                                     className={`p-4 rounded-xl border-2 transition-all ${transaction.corrected
                                         ? 'border-green-300 bg-green-50'
                                         : 'border-yellow-300 bg-yellow-50'
                                         }`}
                                 >
-                                    {editingId === transaction.id ? (
+                                    {editingId === transaction.txn_id ? (
                                         /* Edit Mode */
                                         <div className="space-y-3">
                                             <div className="grid grid-cols-2 gap-4">
@@ -424,7 +428,7 @@ const TransactionsPage = () => {
                                             </div>
                                             <div className="flex gap-2">
                                                 <button
-                                                    onClick={() => saveEdit(transaction.id)}
+                                                    onClick={() => saveEdit(transaction.txn_id)}
                                                     className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
                                                 >
                                                     <Check size={16} />

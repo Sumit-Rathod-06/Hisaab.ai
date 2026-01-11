@@ -4,6 +4,26 @@ import db from "../config/db.js";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
+import multer from "multer";
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = `${Date.now()}-${crypto.randomUUID()}.pdf`;
+    cb(null, uniqueName);
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "application/pdf") cb(null, true);
+    else cb(new Error("Only PDFs allowed"), false);
+  },
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+});
 
 const router = express.Router();
 
@@ -130,48 +150,56 @@ router.get("/expense", async (req, res) => {
    UPLOAD → MCP → CSV
 ================================ */
 
-router.post("/upload", async (req, res) => {
-  req.setTimeout(300000);
+router.post(
+  "/upload",
+  upload.single("pdf"),   // 🔥 THIS WAS MISSING
+  async (req, res) => {
+    req.setTimeout(300000);
 
-  try {
-    const { pdfPath } = req.body;
-    const userId = req.user?.id;
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-    if (!pdfPath) return res.status(400).json({ error: "pdfPath is required" });
+      if (!req.file) {
+        return res.status(400).json({ error: "PDF file is required" });
+      }
 
-    const mcp = await getMCPClient();
+      // ✅ THIS is the real pdfPath
+      const pdfPath = req.file.path;
 
-    const result = await mcp.callTool(
-      {
-        name: "upload_statement",
-        arguments: {
-          user_id: userId,
-          pdf_path: pdfPath
-        }
-      },
-      undefined,
-      { timeout: 300000 }
-    );
+      const mcp = await getMCPClient();
 
-    const rawText = result?.content?.[0]?.text || "";
-    const cleaned = rawText.replace(/```json|```/g, "").trim();
-    const transactions = JSON.parse(cleaned);
+      const result = await mcp.callTool(
+        {
+          name: "upload_statement",
+          arguments: {
+            user_id: userId,
+            pdf_path: pdfPath
+          }
+        },
+        undefined,
+        { timeout: 300000 }
+      );
 
-    const uploadId = crypto.randomUUID();
-    saveTransactionsAsCSV(transactions, uploadId);
+      const rawText = result?.content?.[0]?.text || "";
+      const cleaned = rawText.replace(/```json|```/g, "").trim();
+      const transactions = JSON.parse(cleaned);
 
-    res.json({
-      success: true,
-      upload_id: uploadId,
-      total_transactions: transactions.length
-    });
+      const uploadId = crypto.randomUUID();
+      saveTransactionsAsCSV(transactions, uploadId);
 
-  } catch (err) {
-    console.error("Upload error:", err);
-    res.status(500).json({ error: "Upload failed" });
+      res.json({
+        success: true,
+        upload_id: uploadId,
+        total_transactions: transactions.length
+      });
+
+    } catch (err) {
+      console.error("Upload error:", err);
+      res.status(500).json({ error: "Upload failed" });
+    }
   }
-});
+);
 
 /* ================================
    READ TEMP CSV (FOR UI EDITING)
