@@ -10,8 +10,32 @@ export default function GoalsPage() {
   const [amount, setAmount] = useState("");
   const [months, setMonths] = useState("");
   const [loading, setLoading] = useState(false);
-  
+  const [milestoneAmounts, setMilestoneAmounts] = useState({});
   const token = localStorage.getItem("token");
+  const updateMilestoneAmount = async (goalId, month, key, amount) => {
+    const savedAmount = milestoneAmounts[key];
+    if (!savedAmount) return;
+
+    try {
+      await fetch("http://localhost:5000/api/finance/milestone", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          goalId,
+          savedAmount: Number(savedAmount),
+          expectedAmount: Number(amount),
+          month
+        }),
+      });
+
+      await fetchGoals(); // refresh from backend
+    } catch (err) {
+      console.error("Milestone update error:", err);
+    }
+  };
 
   /* ---------------- FETCH GOALS ---------------- */
   const fetchGoals = async () => {
@@ -62,7 +86,7 @@ export default function GoalsPage() {
     setLoading(true);
 
     try {
-      await fetch(`${API_BASE}/goal`, {
+      await fetch(`"http://localhost:5000/api/finance/goal`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -190,22 +214,50 @@ export default function GoalsPage() {
                 Saved ₹{saved} / ₹{goal.amount}
               </p>
 
-              {goal.subGoals.map(sg => (
-                <label
-                  key={sg.id}
-                  className="flex justify-between p-2 border rounded mb-2 cursor-pointer"
-                >
-                  <span>{sg.title}</span>
-                  <div className="flex items-center gap-2">
-                    <span>₹{sg.amount}</span>
-                    <input
-                      type="checkbox"
-                      checked={sg.completed}
-                      onChange={() => toggleSubGoal(goal.id, sg.id)}
-                    />
+              {goal.subGoals.map((sg, index) => {
+                const month = index + 1;
+                const key = `${goal.id}-${month}`;
+
+                return (
+                  <div
+                    key={key}
+                    className="flex items-center justify-between p-3 border rounded mb-2"
+                  >
+                    <div>
+                      <p className="font-medium">Month {month}</p>
+                      <p className="text-sm text-gray-500">
+                        Target ₹{sg.amount}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min="0"
+                        className="border px-2 py-1 w-28 rounded"
+                        placeholder="Enter amount"
+                        value={milestoneAmounts[key] || ""}
+                        onChange={(e) =>
+                          setMilestoneAmounts({
+                            ...milestoneAmounts,
+                            [key]: e.target.value,
+                          })
+                        }
+                      />
+
+                      <button
+                        onClick={() =>
+                          updateMilestoneAmount(goal.id, month, key, sg.amount)
+                        }
+                        className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                      >
+                        Update
+                      </button>
+                    </div>
                   </div>
-                </label>
-              ))}
+                );
+              })}
+
 
               <div
                 className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-3 ${
