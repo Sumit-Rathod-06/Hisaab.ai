@@ -18,6 +18,8 @@ import Loader from "./components/ui/Loader";
 
 // Landing page loaded with loader
 const Landingpage = lazy(() => import("./pages/LandingPage"));
+import Alerts from "./pages/AlertsPage.jsx";
+import TransactionsPage from "./pages/TransactionsPage.jsx";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -33,18 +35,17 @@ const App = () => {
         />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
-        <Route path="dashboard" element={<DashBoardPage />} />
-        <Route path="goalpage" element={<GoalPage />} />
+        <Route path='dashboard' element={<DashBoardPage/>}/>
+        <Route path='goalpage' element={<PrivateRoute><GoalPage/></PrivateRoute>}/>
         <Route
           path="dashboard"
           element={
-            // <PrivateRoute>
-              <DashBoardPage />
-            // </PrivateRoute>
+
+            <DashBoardPage />
+
           }
         />
-        <Route
-          path="expense_analysis"
+        <Route path="expense_analysis"
           element={
             // <PrivateRoute>
               <ExpenseAnalysisPage />
@@ -59,6 +60,8 @@ const App = () => {
             // </PrivateRoute>
           }
         />
+        <Route path="/alerts" element={<Alerts />} />
+        <Route path="/transactions" element={<TransactionsPage />} />
       </Route>
     )
   );

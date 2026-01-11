@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     TrendingUp,
     Receipt,
@@ -12,56 +12,87 @@ import {
     Lightbulb,
     Dot
 } from 'lucide-react';
+import axios from 'axios';
 
 const ExpenseDashboard = () => {
     const [hoveredPoint, setHoveredPoint] = useState(null);
     const [hoveredSlice, setHoveredSlice] = useState(null);
-    const dashboardData = {
-        total_expense: 9800,
-        expense_count: 35,
-        category_wise_spending: {
-            Food: 4200,
-            Rent: 3000,
-            Travel: 1800,
-            Subscriptions: 800
-        },
-        top_3_categories: ['Food', 'Rent', 'Travel'],
-        average_transaction_value: 280.0,
-        highest_single_expense: {
-            date: '2024-12-03',
-            amount: 3000,
-            category: 'Rent',
-            merchant: 'House Rent'
-        },
-        insights: [
-            'Rent remains constant month-on-month',
-            'Food spending slightly increased during holidays'
-        ],
-        daily_spending: [
-            { date: 'Dec 20', amount: 180 },
-            { date: 'Dec 21', amount: 320 },
-            { date: 'Dec 22', amount: 250 },
-            { date: 'Dec 23', amount: 450 },
-            { date: 'Dec 24', amount: 380 },
-            { date: 'Dec 25', amount: 520 },
-            { date: 'Dec 26', amount: 290 },
-            { date: 'Dec 27', amount: 410 },
-            { date: 'Dec 28', amount: 350 },
-            { date: 'Dec 29', amount: 480 },
-            { date: 'Dec 30', amount: 320 },
-            { date: 'Dec 31', amount: 550 },
-            { date: 'Jan 1', amount: 620 },
-            { date: 'Jan 2', amount: 280 },
-            { date: 'Jan 3', amount: 340 },
-            { date: 'Jan 4', amount: 390 },
-            { date: 'Jan 5', amount: 460 },
-            { date: 'Jan 6', amount: 310 },
-            { date: 'Jan 7', amount: 370 },
-            { date: 'Jan 8', amount: 420 },
-            { date: 'Jan 9', amount: 500 },
-            { date: 'Jan 10', amount: 380 }
-        ]
-    };
+    const [dashboardData, setDashboardData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem("token");
+
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                };
+
+                const [expenseRes, txRes] = await Promise.all([
+                    axios.get("http://localhost:5000/api/finance/expense", config),
+                    axios.get("http://localhost:5000/api/finance/transactions", config),
+                ]);
+
+                const expenseData = expenseRes.data;
+                const transactions = txRes.data.transactions;
+
+                // --- DAILY SPENDING DERIVATION ---
+                const dailyMap = {};
+                transactions.forEach(tx => {
+                    if (tx.transaction_type === "debit") {
+                        dailyMap[tx.date] = (dailyMap[tx.date] || 0) + Number(tx.amount);
+                    }
+                });
+
+                const dailySpending = Object.entries(dailyMap)
+                    .map(([date, amount]) => ({ date, amount }))
+                    .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                setDashboardData({
+                    ...expenseData,
+                    daily_spending: dailySpending,
+                    // normalize keys for frontend
+                    insights: expenseData.ai_insights || [],
+                    top_3_categories: expenseData.top_3_categories.map(c => c.category),
+                });
+
+            } catch (error) {
+                console.error("Dashboard fetch error:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading dashboard...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (
+        !dashboardData ||
+        !dashboardData.daily_spending?.length ||
+        !dashboardData.category_wise_spending
+    ) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p className="text-red-600">Failed to load dashboard data</p>
+            </div>
+        );
+    }
 
     const getCategoryPercentage = (amount) =>
         ((amount / dashboardData.total_expense) * 100).toFixed(1);
@@ -470,6 +501,50 @@ const ExpenseDashboard = () => {
                             ))}
                         </div>
                     </div>
+
+                    {/* Insights - Chatbot Style */}
+                    <div className="mt-6 relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-400/20 via-indigo-400/20 to-purple-400/20 backdrop-blur-xl border border-blue-200/50 shadow-lg">
+                        {/* Glass effect overlay */}
+                        <div className="absolute inset-0 bg-white/40 backdrop-blur-md"></div>
+
+                        <div className="relative z-10 p-6">
+                            {/* Header */}
+                            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-blue-300/30">
+                                <div className="p-2.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full shadow-lg">
+                                    <Lightbulb size={18} className="text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-lg font-bold text-gray-900">AI Insights</h2>
+                                    <p className="text-xs text-blue-700">Powered by Hisaab.ai</p>
+                                </div>
+                            </div>
+
+                            {/* Chat Messages */}
+                            <div className="space-y-3">
+                                {dashboardData.insights.map((insight, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-start gap-3 animate-fade-in"
+                                        style={{ animationDelay: `${index * 0.1}s` }}
+                                    >
+                                        {/* Avatar */}
+                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md">
+                                            <span className="text-white text-xs font-bold">AI</span>
+                                        </div>
+
+                                        {/* Message Bubble */}
+                                        <div className="flex-1 bg-white/70 backdrop-blur-sm rounded-2xl rounded-tl-none p-4 shadow-md border border-blue-100/50 hover:bg-white/80 transition-all duration-200">
+                                            <p className="text-sm text-gray-800 leading-relaxed">{insight}</p>
+                                            <div className="flex items-center gap-2 mt-2 text-xs text-blue-600">
+                                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+                                                <span>Just now</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Right Column */}
@@ -517,63 +592,7 @@ const ExpenseDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Insights - Chatbot Style */}
-                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-400/20 via-indigo-400/20 to-purple-400/20 backdrop-blur-xl border border-blue-200/50 shadow-lg">
-                        {/* Glass effect overlay */}
-                        <div className="absolute inset-0 bg-white/40 backdrop-blur-md"></div>
 
-                        <div className="relative z-10 p-6">
-                            {/* Header */}
-                            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-blue-300/30">
-                                <div className="p-2.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full shadow-lg">
-                                    <Lightbulb size={18} className="text-white" />
-                                </div>
-                                <div>
-                                    <h2 className="text-lg font-bold text-gray-900">AI Insights</h2>
-                                    <p className="text-xs text-blue-700">Powered by Hisaab.ai</p>
-                                </div>
-                            </div>
-
-                            {/* Chat Messages */}
-                            <div className="space-y-3">
-                                {dashboardData.insights.map((insight, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-start gap-3 animate-fade-in"
-                                        style={{ animationDelay: `${index * 0.1}s` }}
-                                    >
-                                        {/* Avatar */}
-                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md">
-                                            <span className="text-white text-xs font-bold">AI</span>
-                                        </div>
-
-                                        {/* Message Bubble */}
-                                        <div className="flex-1 bg-white/70 backdrop-blur-sm rounded-2xl rounded-tl-none p-4 shadow-md border border-blue-100/50 hover:bg-white/80 transition-all duration-200">
-                                            <p className="text-sm text-gray-800 leading-relaxed">{insight}</p>
-                                            <div className="flex items-center gap-2 mt-2 text-xs text-blue-600">
-                                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
-                                                <span>Just now</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-
-                                {/* Typing indicator */}
-                                <div className="flex items-center gap-3 opacity-50">
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md">
-                                        <span className="text-white text-xs font-bold">AI</span>
-                                    </div>
-                                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl rounded-tl-none px-4 py-3 shadow-md border border-blue-100/50">
-                                        <div className="flex gap-1">
-                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
-                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
