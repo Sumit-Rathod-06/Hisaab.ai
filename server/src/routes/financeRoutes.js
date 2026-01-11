@@ -1,9 +1,5 @@
 import express from "express";
 import { getMCPClient } from "../mcpClient.js";
-import db from "../config/db.js";
-import fs from "fs";
-import path from "path";
-import crypto from "crypto";
 
 const router = express.Router();
 
@@ -40,95 +36,45 @@ const saveTransactionsAsCSV = (transactions, uploadId) => {
 };
 
 router.get("/expense", async (req, res) => {
-  // req.setTimeout(300000);
+  req.setTimeout(300000);
 
-  // try {
-  //   const mcp = await getMCPClient();
+  try {
+    const userId = req.user?.id;
 
-  //   const result = await mcp.callTool(
-  //     {
-  //       name: "expense_analysis",
-  //       arguments: {}
-  //     },
-  //     undefined,
-  //     { timeout: 300000 }
-  //   );
-
-  //   // SAFETY CHECK
-  //   const rawText =
-  //     result?.content?.[0]?.text || "";
-
-  //   if (!rawText) {
-  //     return res.status(500).json({
-  //       error: "Empty response from expense_analysis tool"
-  //     });
-  //   }
-
-  //   // CLEAN + PARSE
-  //   const cleanedText = rawText.replace(/json|/g, "").trim();
-  //   const jsonObject = JSON.parse(cleanedText);
-
-  //   // OPTIONAL: Validate minimum required fields
-  //   if (!jsonObject.total_expense || !jsonObject.category_wise_spending) {
-  //     return res.status(500).json({
-  //       error: "Invalid expense analysis format",
-  //       raw: jsonObject
-  //     });
-  //   }
-
-  //   res.json(jsonObject);
-
-  // } catch (err) {
-  //   console.error("Expense analysis error:", err);
-  //   res.status(500).json({ error: err.message });
-  // }
-
-  return res.json(
-    {
-      "total_expense": 2183.02,
-      "expense_count": 20,
-      "category_wise_spending": {
-        "Others": 1110,
-        "Food & Dining": 396,
-        "Online Shopping": 260.12,
-        "Mobile Recharge": 240.9,
-        "Groceries": 110,
-        "Pharmacy": 62,
-        "Shopping": 4
-      },
-      "top_3_categories": [
-        {
-          "category": "Others",
-          "amount": 1110
-        },
-        {
-          "category": "Food & Dining",
-          "amount": 396
-        },
-        {
-          "category": "Online Shopping",
-          "amount": 260.12
-        }
-      ],
-      "average_transaction_value": 109.15,
-      "highest_single_expense": {
-        "amount": 396,
-        "category": "Food & Dining",
-        "description": "Paid to ZOMATO LIMITED",
-        "date": "05 Dec 2025"
-      },
-      "ai_insights": [
-        "Re-evaluating \"Others\" category expenses (₹1110, 50.8% of your spending) to identify and eliminate unnecessary subscriptions or recurring charges could save you ₹500+ annually.",
-        "Reducing food and dining expenses by 25% (₹99 from ₹396) through meal prepping or cooking at home can free up ₹1188 annually for investments or debt repayment.",
-        "Decreasing online shopping purchases by half (₹130.06 from ₹260.12) and investing that amount in an index fund with an average 7% annual return could yield approximately ₹140 next year."
-      ]
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
-  )
-});
+    const mcp = await getMCPClient();
 
-/* ================================
-   UPLOAD → MCP → CSV
-================================ */
+    const result = await mcp.callTool(
+      {
+        name: "expense_analysis",
+        arguments: { user_id: userId },
+      },
+      undefined,
+      {
+        timeout: 300000,
+      }
+    );
+
+    // Fix: Access the text inside the first array element
+    const rawText = result.content[0].text;
+
+    try {
+      // Clean and Parse the JSON string into an object
+      const cleanedText = rawText.replace(/```json|```/g, "").trim();
+      const jsonObject = JSON.parse(cleanedText);
+
+      res.json(jsonObject);
+    } catch (parseErr) {
+      console.error("Expense JSON Parsing failed:", parseErr);
+      res.json({ analysis: rawText });
+    }
+  } catch (err) {
+    console.error("Expense analysis error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 router.post("/upload", async (req, res) => {
   req.setTimeout(300000);
@@ -173,120 +119,36 @@ router.post("/upload", async (req, res) => {
   }
 });
 
-/* ================================
-   READ TEMP CSV (FOR UI EDITING)
-================================ */
+router.get("/alerts", async (req, res) => {
+  req.setTimeout(300000);
 
-router.get("/transactions/:upload_id", async (req, res) => {
-  try {
-    const { upload_id } = req.params;
-    const csvPath = path.join(uploadDir, `${upload_id}.csv`);
-
-    if (!fs.existsSync(csvPath)) {
-      return res.status(404).json({ error: "Upload not found" });
-    }
-
-    const lines = fs.readFileSync(csvPath, "utf-8")
-      .split("\n")
-      .filter(Boolean);
-
-    const headers = lines[0].split(",");
-
-    const data = lines.slice(1).map(line => {
-      const values = line.split(",");
-      return Object.fromEntries(headers.map((h, i) => [h, values[i]]));
-    });
-
-    res.json({ transactions: data });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to read CSV" });
-  }
-});
-
-/* ================================
-   SAVE ONLY MODIFIED TRANSACTIONS
-================================ */
-
-router.post("/transactions/modify", async (req, res) => {
   try {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const {
-      upload_id,
-      txn_id,
-      corrected_category,
-      corrected_description,
-      corrected_amount
-    } = req.body;
+    const mcp = await getMCPClient();
 
-    await db.query(
-      `
-      INSERT INTO transaction_corrections (
-        user_id,
-        upload_id,
-        txn_id,
-        corrected_category,
-        corrected_description,
-        corrected_amount
-      )
-      VALUES ($1,$2,$3,$4,$5,$6)
-      `,
-      [
-        userId,
-        upload_id,
-        txn_id,
-        corrected_category,
-        corrected_description,
-        corrected_amount
-      ]
+    const result = await mcp.callTool(
+      {
+        name: "alerts",
+        arguments: { user_id: userId }
+      },
+      undefined,
+      { timeout: 300000 }
     );
 
-    res.json({ success: true });
+    const rawText = result.content[0].text;
 
+    try {
+      const cleanedText = rawText.replace(/```json|```/g, "").trim();
+      const jsonObject = JSON.parse(cleanedText);
+      res.json(jsonObject);
+    } catch {
+      res.json({ alerts: rawText });
+    }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to save correction" });
-  }
-});
-
-/* ================================
-   FINAL DB TRANSACTIONS VIEW
-================================ */
-
-router.get("/transactions", async (req, res) => {
-  try {
-    const userId = "cc683836-754d-498c-88cd-0c29acb7e50d";
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
-    const result = await db.query(
-      `
-      SELECT
-        id,
-        upload_id,
-        date,
-        description,
-        amount,
-        transaction_type,
-        category,
-        created_at
-      FROM transactions
-      WHERE user_id = $1
-      ORDER BY created_at DESC
-      `,
-      [userId]
-    );
-
-    res.json({
-      count: result.rowCount,
-      transactions: result.rows
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch transactions" });
+    console.error("Alerts tool error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -315,6 +177,96 @@ router.delete("/transactions/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to delete transaction" });
+  }
+});
+
+router.post("/milestone", async (req, res) => {
+  req.setTimeout(300000);
+
+  try {
+    const { goalId, savedAmount, expectedAmount, expenseAnalysis } = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    if (!goalId) {
+      return res.status(400).json({ error: "goalId is required" });
+    }
+
+    const mcp = await getMCPClient();
+
+    const result = await mcp.callTool(
+      {
+        name: "update_milestone",
+        arguments: {
+          user_id: userId,
+          goal_id: goalId,
+          saved_amount: savedAmount,
+          expected_amount: expectedAmount,
+          expense_analysis: expenseAnalysis
+        }
+      },
+      undefined,
+      { timeout: 300000 }
+    );
+
+    const rawText = result.content[0].text;
+    const cleaned = rawText.replace(/```json|```/g, "").trim();
+    const json = JSON.parse(cleaned);
+
+    res.json(json);
+  } catch (err) {
+    console.error("Milestone update error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/finance/chat
+router.post("/chat", async (req, res) => {
+  req.setTimeout(300000);
+
+  try {
+    const userId = req.user?.id;
+    const { question } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    if (!question) {
+      return res.status(400).json({ error: "question is required" });
+    }
+
+    const mcp = await getMCPClient();
+
+    const result = await mcp.callTool(
+      {
+        name: "finance_chat",
+        arguments: {
+          user_id: userId,
+          question: question,
+        },
+      },
+      undefined,
+      { timeout: 300000 }
+    );
+
+    // MCP returns text in content array
+    const rawText = result.content?.[0]?.text || "";
+
+    // If the agent returns JSON, try parsing
+    try {
+      const cleaned = rawText.replace(/```json|```/g, "").trim();
+      const json = JSON.parse(cleaned);
+      return res.json(json);
+    } catch {
+      // Otherwise return plain text answer
+      return res.json({ answer: rawText });
+    }
+  } catch (err) {
+    console.error("Chat error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
