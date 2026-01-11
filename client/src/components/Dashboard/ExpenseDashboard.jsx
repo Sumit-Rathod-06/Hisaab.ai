@@ -21,53 +21,53 @@ const ExpenseDashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("token");
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem("token");
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                };
 
-      const [expenseRes, txRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/finance/expense", config),
-        axios.get("http://localhost:5000/api/finance/transactions", config),
-      ]);
+                const [expenseRes, txRes] = await Promise.all([
+                    axios.get("http://localhost:5000/api/finance/expense", config),
+                    axios.get("http://localhost:5000/api/finance/transactions", config),
+                ]);
 
-      const expenseData = expenseRes.data;
-      const transactions = txRes.data.transactions;
+                const expenseData = expenseRes.data;
+                const transactions = txRes.data.transactions;
 
-      // --- DAILY SPENDING DERIVATION ---
-      const dailyMap = {};
-      transactions.forEach(tx => {
-        if (tx.transaction_type === "debit") {
-          dailyMap[tx.date] = (dailyMap[tx.date] || 0) + Number(tx.amount);
-        }
-      });
+                // --- DAILY SPENDING DERIVATION ---
+                const dailyMap = {};
+                transactions.forEach(tx => {
+                    if (tx.transaction_type === "debit") {
+                        dailyMap[tx.date] = (dailyMap[tx.date] || 0) + Number(tx.amount);
+                    }
+                });
 
-      const dailySpending = Object.entries(dailyMap)
-        .map(([date, amount]) => ({ date, amount }))
-        .sort((a, b) => new Date(a.date) - new Date(b.date));
+                const dailySpending = Object.entries(dailyMap)
+                    .map(([date, amount]) => ({ date, amount }))
+                    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      setDashboardData({
-        ...expenseData,
-        daily_spending: dailySpending,
-        // normalize keys for frontend
-        insights: expenseData.ai_insights || [],
-        top_3_categories: expenseData.top_3_categories.map(c => c.category),
-      });
+                setDashboardData({
+                    ...expenseData,
+                    daily_spending: dailySpending,
+                    // normalize keys for frontend
+                    insights: expenseData.ai_insights || [],
+                    top_3_categories: expenseData.top_3_categories.map(c => c.category),
+                });
 
-    } catch (error) {
-      console.error("Dashboard fetch error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+            } catch (error) {
+                console.error("Dashboard fetch error:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  fetchData();
-}, []);
+        fetchData();
+    }, []);
 
 
 
@@ -83,16 +83,16 @@ const ExpenseDashboard = () => {
     }
 
     if (
-  !dashboardData ||
-  !dashboardData.daily_spending?.length ||
-  !dashboardData.category_wise_spending
-) {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <p className="text-red-600">Failed to load dashboard data</p>
-    </div>
-  );
-}
+        !dashboardData ||
+        !dashboardData.daily_spending?.length ||
+        !dashboardData.category_wise_spending
+    ) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p className="text-red-600">Failed to load dashboard data</p>
+            </div>
+        );
+    }
 
     const getCategoryPercentage = (amount) =>
         ((amount / dashboardData.total_expense) * 100).toFixed(1);
@@ -501,6 +501,50 @@ const ExpenseDashboard = () => {
                             ))}
                         </div>
                     </div>
+
+                    {/* Insights - Chatbot Style */}
+                    <div className="mt-6 relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-400/20 via-indigo-400/20 to-purple-400/20 backdrop-blur-xl border border-blue-200/50 shadow-lg">
+                        {/* Glass effect overlay */}
+                        <div className="absolute inset-0 bg-white/40 backdrop-blur-md"></div>
+
+                        <div className="relative z-10 p-6">
+                            {/* Header */}
+                            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-blue-300/30">
+                                <div className="p-2.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full shadow-lg">
+                                    <Lightbulb size={18} className="text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-lg font-bold text-gray-900">AI Insights</h2>
+                                    <p className="text-xs text-blue-700">Powered by Hisaab.ai</p>
+                                </div>
+                            </div>
+
+                            {/* Chat Messages */}
+                            <div className="space-y-3">
+                                {dashboardData.insights.map((insight, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-start gap-3 animate-fade-in"
+                                        style={{ animationDelay: `${index * 0.1}s` }}
+                                    >
+                                        {/* Avatar */}
+                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md">
+                                            <span className="text-white text-xs font-bold">AI</span>
+                                        </div>
+
+                                        {/* Message Bubble */}
+                                        <div className="flex-1 bg-white/70 backdrop-blur-sm rounded-2xl rounded-tl-none p-4 shadow-md border border-blue-100/50 hover:bg-white/80 transition-all duration-200">
+                                            <p className="text-sm text-gray-800 leading-relaxed">{insight}</p>
+                                            <div className="flex items-center gap-2 mt-2 text-xs text-blue-600">
+                                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+                                                <span>Just now</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Right Column */}
@@ -548,63 +592,7 @@ const ExpenseDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Insights - Chatbot Style */}
-                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-400/20 via-indigo-400/20 to-purple-400/20 backdrop-blur-xl border border-blue-200/50 shadow-lg">
-                        {/* Glass effect overlay */}
-                        <div className="absolute inset-0 bg-white/40 backdrop-blur-md"></div>
 
-                        <div className="relative z-10 p-6">
-                            {/* Header */}
-                            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-blue-300/30">
-                                <div className="p-2.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full shadow-lg">
-                                    <Lightbulb size={18} className="text-white" />
-                                </div>
-                                <div>
-                                    <h2 className="text-lg font-bold text-gray-900">AI Insights</h2>
-                                    <p className="text-xs text-blue-700">Powered by Hisaab.ai</p>
-                                </div>
-                            </div>
-
-                            {/* Chat Messages */}
-                            <div className="space-y-3">
-                                {dashboardData.insights.map((insight, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-start gap-3 animate-fade-in"
-                                        style={{ animationDelay: `${index * 0.1}s` }}
-                                    >
-                                        {/* Avatar */}
-                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md">
-                                            <span className="text-white text-xs font-bold">AI</span>
-                                        </div>
-
-                                        {/* Message Bubble */}
-                                        <div className="flex-1 bg-white/70 backdrop-blur-sm rounded-2xl rounded-tl-none p-4 shadow-md border border-blue-100/50 hover:bg-white/80 transition-all duration-200">
-                                            <p className="text-sm text-gray-800 leading-relaxed">{insight}</p>
-                                            <div className="flex items-center gap-2 mt-2 text-xs text-blue-600">
-                                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
-                                                <span>Just now</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-
-                                {/* Typing indicator */}
-                                <div className="flex items-center gap-3 opacity-50">
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md">
-                                        <span className="text-white text-xs font-bold">AI</span>
-                                    </div>
-                                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl rounded-tl-none px-4 py-3 shadow-md border border-blue-100/50">
-                                        <div className="flex gap-1">
-                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
-                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

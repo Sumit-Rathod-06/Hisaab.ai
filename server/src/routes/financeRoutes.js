@@ -4,45 +4,37 @@ import db from "../config/db.js";
 
 const router = express.Router();
 
-router.post("/upload", async (req, res) => {
-  // 1. Set the Express response timeout
-  req.setTimeout(300000);
+/* ================================
+   TEMP CSV STORAGE
+================================ */
 
-  try {
-    const { pdfPath } = req.body || {};
-    const userId = req.user?.id;
+const uploadDir = "uploads";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    if (!pdfPath) {
-      return res.status(400).json({ error: "pdfPath is required" });
-    }
+const saveTransactionsAsCSV = (transactions, uploadId) => {
+  const csvPath = path.join(uploadDir, `${uploadId}.csv`);
 
-    const mcp = await getMCPClient();
+  const headers = [
+    "txn_id",
+    "date",
+    "description",
+    "amount",
+    "ai_category"
+  ];
 
-    // 2. Use callTool with the options object as the THIRD argument
-    // Signature: callTool(args, schema, options)
-    const result = await mcp.callTool(
-      {
-        name: "upload_statement",
-        arguments: {
-          user_id: userId,
-          pdf_path: pdfPath,
-        },
-      },
-      undefined, // We skip the custom result schema
-      {
-        timeout: 300000, // Correct key is 'timeout' for callTool options
-      }
-    );
+  const rows = transactions.map((t, i) => [
+    i + 1,
+    t.date || "",
+    `"${(t.description || "").replace(/,/g, " ").replace(/"/g, "")}"`,
+    t.amount || 0,
+    t.category || "Others"
+  ].join(","));
 
-    res.json(result);
-  } catch (err) {
-    console.error("Upload error details:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
+  fs.writeFileSync(csvPath, [headers.join(","), ...rows].join("\n"));
+  return csvPath;
+};
 
 router.get("/expense", async (req, res) => {
   req.setTimeout(300000);
@@ -85,45 +77,46 @@ router.get("/expense", async (req, res) => {
   }
 });
 
-router.post("/goal", async (req, res) => {
+router.post("/upload", async (req, res) => {
   req.setTimeout(300000);
 
   try {
-    const { amount, months, purpose } = req.body;
+    const { pdfPath } = req.body;
     const userId = req.user?.id;
 
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!pdfPath) return res.status(400).json({ error: "pdfPath is required" });
 
     const mcp = await getMCPClient();
 
     const result = await mcp.callTool(
       {
-        name: "set_goal",
-        arguments: { user_id: userId, amount, months, purpose },
+        name: "upload_statement",
+        arguments: {
+          user_id: userId,
+          pdf_path: pdfPath
+        }
       },
       undefined,
       { timeout: 300000 }
     );
 
-    // 1. Extract the text string
-    const rawText = result.content[0].text;
+    const rawText = result?.content?.[0]?.text || "";
+    const cleaned = rawText.replace(/```json|```/g, "").trim();
+    const transactions = JSON.parse(cleaned);
 
-    try {
-      // 2. Clean and Parse the JSON
-      const cleanedText = rawText.replace(/```json|```/g, "").trim();
-      const jsonObject = JSON.parse(cleanedText);
+    const uploadId = crypto.randomUUID();
+    saveTransactionsAsCSV(transactions, uploadId);
 
-      // 3. Return the parsed goal object
-      res.json(jsonObject);
-    } catch (parseErr) {
-      // If the response isn't JSON (e.g., just a success string), return it as text
-      res.json({ message: rawText });
-    }
+    res.json({
+      success: true,
+      upload_id: uploadId,
+      total_transactions: transactions.length
+    });
+
   } catch (err) {
-    console.error("Goal creation error:", err);
-    res.status(500).json({ error: err.message });
+    console.error("Upload error:", err);
+    res.status(500).json({ error: "Upload failed" });
   }
 });
 
@@ -160,44 +153,31 @@ router.get("/alerts", async (req, res) => {
   }
 });
 
-router.get("/summary", async (req, res) => {
-  req.setTimeout(300000);
+/* ================================
+   DELETE TRANSACTION (POSTGRES)
+================================ */
 
+router.delete("/transactions/:id", async (req, res) => {
   try {
     const userId = req.user?.id;
+    const transactionId = req.params.id;
 
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    const mcp = await getMCPClient();
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const result = await mcp.callTool(
-      {
-        name: "cfo_summary",
-        arguments: { user_id: userId },
-      },
-      undefined,
-      { timeout: 300000 }
+    const result = await db.query(
+      `DELETE FROM transactions WHERE id = $1 AND user_id = $2`,
+      [transactionId, userId]
     );
 
-    // 1. Extract the string from the MCP response structure
-    // result.content is usually [{ type: 'text', text: '...' }]
-    const rawText = result.content[0].text;
-
-    try {
-      // 2. Parse the string into a JSON object
-      const jsonObject = JSON.parse(rawText);
-
-      // 3. Send the actual object to the frontend
-      res.json(jsonObject);
-    } catch (parseErr) {
-      console.error("JSON Parsing failed. Sending raw text as fallback.");
-      // Fallback: If the AI returns malformed JSON, send the raw text
-      res.json({ error: "Failed to parse summary", rawText });
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Transaction not found" });
     }
+
+    res.json({ success: true });
+
   } catch (err) {
-    console.error("CFO Summary error:", err);
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete transaction" });
   }
 });
 

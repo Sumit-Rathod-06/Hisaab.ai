@@ -15,6 +15,7 @@ import ExpenseAnalysisPage from "./pages/ExpenseAnalysisPage";
 import ProfilePage from "./pages/ProfilePage";
 import GoalPage from './pages/GoalPage';
 import Alerts from "./pages/AlertsPage.jsx";
+import TransactionsPage from "./pages/TransactionsPage.jsx";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -28,9 +29,9 @@ const App = () => {
         <Route
           path="dashboard"
           element={
-            
-              <DashBoardPage />
-            
+
+            <DashBoardPage />
+
           }
         />
         <Route path="expense_analysis"
@@ -49,6 +50,7 @@ const App = () => {
           }
         />
         <Route path="/alerts" element={<Alerts />} />
+        <Route path="/transactions" element={<TransactionsPage />} />
       </Route>
     )
   );

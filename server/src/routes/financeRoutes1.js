@@ -1,48 +1,43 @@
 import express from "express";
 import { getMCPClient } from "../mcpClient.js";
 import db from "../config/db.js";
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
 
 const router = express.Router();
 
-router.post("/upload", async (req, res) => {
-  // 1. Set the Express response timeout
-  req.setTimeout(300000);
+/* ================================
+   TEMP CSV STORAGE
+================================ */
 
-  try {
-    const { pdfPath } = req.body || {};
-    const userId = req.user?.id;
+const uploadDir = "uploads";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    if (!pdfPath) {
-      return res.status(400).json({ error: "pdfPath is required" });
-    }
+const saveTransactionsAsCSV = (transactions, uploadId) => {
+  const csvPath = path.join(uploadDir, `${uploadId}.csv`);
 
-    const mcp = await getMCPClient();
+  const headers = [
+    "txn_id",
+    "date",
+    "description",
+    "amount",
+    "ai_category"
+  ];
 
-    // 2. Use callTool with the options object as the THIRD argument
-    // Signature: callTool(args, schema, options)
-    const result = await mcp.callTool(
-      {
-        name: "upload_statement",
-        arguments: {
-          user_id: userId,
-          pdf_path: pdfPath,
-        },
-      },
-      undefined, // We skip the custom result schema
-      {
-        timeout: 300000, // Correct key is 'timeout' for callTool options
-      }
-    );
+  const rows = transactions.map((t, i) => [
+    i + 1,
+    t.date || "",
+    `"${(t.description || "").replace(/,/g, " ").replace(/"/g, "")}"`,
+    t.amount || 0,
+    t.category || "Others"
+  ].join(","));
 
-    res.json(result);
-  } catch (err) {
-    console.error("Upload error details:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
+  fs.writeFileSync(csvPath, [headers.join(","), ...rows].join("\n"));
+  return csvPath;
+};
 
 router.get("/expense", async (req, res) => {
   // req.setTimeout(300000);
@@ -284,13 +279,144 @@ router.get("/alerts", async (req, res) => {
   });
 });
 
+/* ================================
+   UPLOAD → MCP → CSV
+================================ */
+
+router.post("/upload", async (req, res) => {
+  req.setTimeout(300000);
+
+  try {
+    const { pdfPath } = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!pdfPath) return res.status(400).json({ error: "pdfPath is required" });
+
+    const mcp = await getMCPClient();
+
+    const result = await mcp.callTool(
+      {
+        name: "upload_statement",
+        arguments: {
+          user_id: userId,
+          pdf_path: pdfPath
+        }
+      },
+      undefined,
+      { timeout: 300000 }
+    );
+
+    const rawText = result?.content?.[0]?.text || "";
+    const cleaned = rawText.replace(/```json|```/g, "").trim();
+    const transactions = JSON.parse(cleaned);
+
+    const uploadId = crypto.randomUUID();
+    saveTransactionsAsCSV(transactions, uploadId);
+
+    res.json({
+      success: true,
+      upload_id: uploadId,
+      total_transactions: transactions.length
+    });
+
+  } catch (err) {
+    console.error("Upload error:", err);
+    res.status(500).json({ error: "Upload failed" });
+  }
+});
+
+/* ================================
+   READ TEMP CSV (FOR UI EDITING)
+================================ */
+
+router.get("/transactions/:upload_id", async (req, res) => {
+  try {
+    const { upload_id } = req.params;
+    const csvPath = path.join(uploadDir, `${upload_id}.csv`);
+
+    if (!fs.existsSync(csvPath)) {
+      return res.status(404).json({ error: "Upload not found" });
+    }
+
+    const lines = fs.readFileSync(csvPath, "utf-8")
+      .split("\n")
+      .filter(Boolean);
+
+    const headers = lines[0].split(",");
+
+    const data = lines.slice(1).map(line => {
+      const values = line.split(",");
+      return Object.fromEntries(headers.map((h, i) => [h, values[i]]));
+    });
+
+    res.json({ transactions: data });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to read CSV" });
+  }
+});
+
+/* ================================
+   SAVE ONLY MODIFIED TRANSACTIONS
+================================ */
+
+router.post("/transactions/modify", async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const {
+      upload_id,
+      txn_id,
+      corrected_category,
+      corrected_description,
+      corrected_amount
+    } = req.body;
+
+    await db.query(
+      `
+      INSERT INTO transaction_corrections (
+        user_id,
+        upload_id,
+        txn_id,
+        corrected_category,
+        corrected_description,
+        corrected_amount
+      )
+      VALUES ($1,$2,$3,$4,$5,$6)
+      `,
+      [
+        userId,
+        upload_id,
+        txn_id,
+        corrected_category,
+        corrected_description,
+        corrected_amount
+      ]
+    );
+
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to save correction" });
+  }
+});
+
+/* ================================
+   FINAL DB TRANSACTIONS VIEW
+================================ */
+
 router.get("/transactions", async (req, res) => {
   try {
-    const userId = "d8f24ba0-b99d-4433-be84-7959d5298ff0";
+    const userId = "cc683836-754d-498c-88cd-0c29acb7e50d";
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const result = await db.query(
       `
-      SELECT 
+      SELECT
         id,
         upload_id,
         date,
@@ -312,7 +438,7 @@ router.get("/transactions", async (req, res) => {
     });
 
   } catch (err) {
-    console.error("Fetch transactions error:", err);
+    console.error(err);
     res.status(500).json({ error: "Failed to fetch transactions" });
   }
 });
@@ -355,6 +481,33 @@ router.get("/summary", async (req, res) => {
   } catch (err) {
     console.error("CFO Summary error:", err);
     res.status(500).json({ error: err.message });
+  }
+});
+/* ================================
+   DELETE TRANSACTION (POSTGRES)
+================================ */
+
+router.delete("/transactions/:id", async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    const transactionId = req.params.id;
+
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const result = await db.query(
+      `DELETE FROM transactions WHERE id = $1 AND user_id = $2`,
+      [transactionId, userId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete transaction" });
   }
 });
 
