@@ -1,15 +1,6 @@
 import { useState } from "react";
 import { Target, TrendingUp, Calendar, Plus, Trash2, Check } from "lucide-react";
 
-<<<<<<< HEAD
-const GoalPage = () => {
-    return (
-        <div className="min-h-screen bg-[#dae2ee] py-12">
-            <h1 className="text-4xl font-bold text-center text-black mb-8">
-                Your Financial Goals
-            </h1>
-            <GoalCards />
-=======
 export default function GoalsPage() {
   const [goals, setGoals] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -108,7 +99,6 @@ export default function GoalsPage() {
               New Goal
             </button>
           </div>
->>>>>>> 45f75bc9b2c722550578e5c40212909711d349ab
         </div>
       </div>
 
