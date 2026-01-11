@@ -90,3 +90,104 @@ CREATE TABLE goals (
 
 CREATE INDEX idx_goals_user
 ON goals(user_id);
+
+CREATE TABLE user_category_memory (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    merchant_pattern TEXT NOT NULL,
+    category TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, merchant_pattern)
+);
+
+
+INSERT INTO transactions (
+    user_id,
+    upload_id,
+    date,
+    description,
+    amount,
+    transaction_type,
+    category,
+    raw_json
+) VALUES
+(
+    'd8f24ba0-b99d-4433-be84-7959d5298ff0',
+    '11111111-2222-3333-4444-555555555555',
+    '2025-01-01',
+    'Salary credited',
+    60000.00,
+    'credit',
+    'Income',
+    '{"bank": "HDFC", "mode": "NEFT", "reference": "SAL_JAN_2025"}'
+),
+(
+    'd8f24ba0-b99d-4433-be84-7959d5298ff0',
+    '11111111-2222-3333-4444-555555555555',
+    '2025-01-03',
+    'Rent payment',
+    18000.00,
+    'debit',
+    'Rent',
+    '{"payment_method": "UPI", "to": "Landlord"}'
+),
+(
+    'd8f24ba0-b99d-4433-be84-7959d5298ff0',
+    '11111111-2222-3333-4444-555555555555',
+    '2025-01-05',
+    'Grocery shopping',
+    2450.75,
+    'debit',
+    'Groceries',
+    '{"store": "Reliance Fresh", "payment_method": "Card"}'
+),
+(
+    'd8f24ba0-b99d-4433-be84-7959d5298ff0',
+    '11111111-2222-3333-4444-555555555555',
+    '2025-01-07',
+    'Electricity bill payment',
+    1650.00,
+    'debit',
+    'Utilities',
+    '{"provider": "BESCOM", "bill_month": "Dec 2024"}'
+),
+(
+    'd8f24ba0-b99d-4433-be84-7959d5298ff0',
+    '11111111-2222-3333-4444-555555555555',
+    '2025-01-09',
+    'Mobile recharge',
+    599.00,
+    'debit',
+    'Telecom',
+    '{"operator": "Jio", "plan": "Prepaid 28 days"}'
+),
+(
+    'd8f24ba0-b99d-4433-be84-7959d5298ff0',
+    '11111111-2222-3333-4444-555555555555',
+    '2025-01-12',
+    'Restaurant payment',
+    1350.40,
+    'debit',
+    'Food',
+    '{"restaurant": "Barbeque Nation", "payment_method": "UPI"}'
+),
+(
+    'd8f24ba0-b99d-4433-be84-7959d5298ff0',
+    '11111111-2222-3333-4444-555555555555',
+    '2025-01-15',
+    'Fuel purchase',
+    2100.00,
+    'debit',
+    'Transport',
+    '{"station": "IndianOil", "vehicle": "Car"}'
+),
+(
+    'd8f24ba0-b99d-4433-be84-7959d5298ff0',
+    '11111111-2222-3333-4444-555555555555',
+    '2025-01-20',
+    'Interest credited',
+    325.60,
+    'credit',
+    'Interest',
+    '{"bank": "HDFC", "account": "Savings"}'
+);

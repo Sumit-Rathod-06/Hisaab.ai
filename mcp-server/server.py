@@ -3,9 +3,13 @@
 import os
 import uuid
 import json
+import pandas as pd
 import psycopg
 from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
+from agents.milestone import MilestoneAdjustmentAgent
+from agents.chatbot import FinanceChatAgent
+import google.generativeai as genai
 
 from agents.ingestion import run_ingestion
 from agents.expense import run_expense_analysis
@@ -204,9 +208,56 @@ def set_goal(user_id: str, amount: float, months: int, purpose: str):
 def cfo_summary(user_id: str):
     return run_cfo_summary(STATE)
 
-# ----------------------------
-# Run Server
-# ----------------------------
+@mcp.tool()
+def update_milestone(
+    user_id: str,
+    goal_id: str,
+    saved_amount: float,
+    expected_amount: float,
+    expense_analysis: dict
+):
+    goal_id = int(goal_id)  # 🔥 ensure correct type
+
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            # Fetch goal
+            cur.execute(
+                """
+                SELECT plan FROM goals
+                WHERE id = %s AND user_id = %s
+                """,
+                (goal_id, user_id)
+            )
+            row = cur.fetchone()
+
+            if not row:
+                raise ValueError("Goal not found for this user")
+
+            goal_plan = row[0]
+            conn.commit()
+
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    model = genai.GenerativeModel("models/gemini-2.0-flash")
+
+    agent = MilestoneAdjustmentAgent(model)
+    updated_plan = agent.run(
+        saved_amount,
+        expected_amount,
+        goal_plan,
+        expense_analysis
+    )
+
+    return updated_plan
+
+@mcp.tool()
+def finance_chat(question: str):
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    model = genai.GenerativeModel("models/gemini-2.0-flash")
+
+    agent = FinanceChatAgent(STATE, model)
+    answer = agent.run(question)
+
+    return {"answer": answer}
 
 if __name__ == "__main__":
     mcp.run()
